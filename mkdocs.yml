@@ -1,5 +1,5 @@
 site_name: Ratatöskr
-site_description: Static site rendered from an Obsidian vault.
+site_description: Wikingerzeit-Reenactment · Kleines Museum · Drei Begeisterte
 site_url: https://britz.github.io/ratatoskr/
 repo_url: https://github.com/britz/ratatoskr
 repo_name: britz/ratatoskr
@@ -10,7 +10,7 @@ site_dir: site
 
 theme:
   name: material
-  language: en
+  language: de
   features:
     - navigation.instant
     - navigation.tracking
@@ -30,18 +30,18 @@ theme:
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: indigo
-      accent: indigo
+      primary: brown
+      accent: amber
       toggle:
         icon: material/weather-sunny
-        name: Switch to dark mode
+        name: Dunkles Design aktivieren
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: indigo
-      accent: indigo
+      primary: brown
+      accent: amber
       toggle:
         icon: material/weather-night
-        name: Switch to light mode
+        name: Helles Design aktivieren
   icon:
     repo: fontawesome/brands/github
   favicon: assets/favicon.png
@@ -89,11 +89,17 @@ markdown_extensions:
   - pymdownx.tilde
 
 extra_css:
-  - stylesheets/extra.css
+  - assets/stylesheets/extra.css
 
 extra_javascript:
-  - javascripts/mathjax.js
+  - assets/javascripts/mathjax.js
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Start: index.md
+  - Über uns: ueber-uns.md
+  - Museum: museum.md
+  - Kontakt: kontakt.md
 
 exclude_docs: |
   .obsidian/

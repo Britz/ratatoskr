@@ -8,10 +8,6 @@
 
   "postCreateCommand": "pip install --user --upgrade pip && pip install --user -r requirements.txt",
 
-  "postAttachCommand": {
-    "hint": "echo '\\n→ Run \"mkdocs serve\" to preview the site at http://localhost:8000\\n'"
-  },
-
   "forwardPorts": [8000],
   "portsAttributes": {
     "8000": {

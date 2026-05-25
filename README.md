@@ -56,8 +56,17 @@ Translated automatically by the
 ## Deploying
 
 1. Push to `main`.
-2. In **Settings → Pages**, set **Source** to *GitHub Actions* (one-time).
+2. Enable Pages with *GitHub Actions* as the build source (one-time).
+   Easiest from inside the devcontainer:
+
+   ```bash
+   bash .devcontainer/enable-pages.sh
+   ```
+
+   That script calls `gh api repos/<owner>/<repo>/pages -X POST -f build_type=workflow`
+   and then triggers the workflow — equivalent to flipping the **Source**
+   dropdown under *Settings → Pages* in the UI.
 3. The workflow at `.github/workflows/deploy.yml` builds and publishes the site
-   on every push to `main`.
+   on every subsequent push to `main`.
 
 The site URL will be `https://britz.github.io/ratatoskr/`.

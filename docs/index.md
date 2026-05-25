@@ -7,81 +7,67 @@ hide:
 
 <div class="hero" markdown>
 
+![Ratatöskr Logo](assets/bilder/ratatoskr-logo.png){ .hero-logo }
+
 # Ratatöskr { .hero-title }
 
-A static site rendered straight from your Obsidian vault — beautiful, fast, and entirely yours.
+Wikingerzeit-Reenactment, lebendige Geschichte und ein kleines Museum —
+drei Menschen, eine Leidenschaft für das frühe Mittelalter.
 { .hero-tagline }
 
 <div class="hero-cta" markdown>
-[Get started](getting-started.md){ .md-button .md-button--primary }
-[View on GitHub](https://github.com/britz/ratatoskr){ .md-button }
+[Über uns](ueber-uns.md){ .md-button .md-button--primary }
+[Das Museum](museum.md){ .md-button }
 </div>
 
 </div>
 
-## Why Ratatöskr
+## Wer sind wir?
 
 <div class="grid cards" markdown>
 
--   :simple-obsidian:{ .lg .middle } &nbsp; **Obsidian-native**
+-   :material-account-group:{ .lg .middle } &nbsp; **Eine Gruppe aus drei**
 
     ---
 
-    `[[wikilinks]]`, `![[embeds]]`, callouts, and tags are rendered the way you wrote them.
+    Wir sind ein kleines, aber engagiertes Team, das die Lebenswelt der
+    Wikingerzeit durch gründliche Recherche und handwerkliche Nacharbeit
+    zum Leben erweckt.
 
--   :material-flash:{ .lg .middle } &nbsp; **Fast and static**
-
-    ---
-
-    Pure HTML and CSS. Loads instantly, no servers to maintain, no databases to back up.
-
--   :material-magnify:{ .lg .middle } &nbsp; **Search built in**
+-   :material-castle:{ .lg .middle } &nbsp; **Lebendige Geschichte**
 
     ---
 
-    Full-text client-side search with highlighted matches and instant results.
+    Auf Märkten, Museen und Schulveranstaltungen zeigen wir, wie Menschen
+    im 9. bis 11. Jahrhundert lebten, arbeiteten und glaubten.
 
--   :material-source-branch:{ .lg .middle } &nbsp; **Git-friendly**
-
-    ---
-
-    Markdown in, HTML out. Version-control your knowledge like the rest of your work.
-
--   :material-math-integral:{ .lg .middle } &nbsp; **LaTeX math**
+-   :material-home-city:{ .lg .middle } &nbsp; **Kleines Museum**
 
     ---
 
-    Inline and display math via MathJax — render equations right in your notes.
+    Unsere Sammlung an Repliken, Originalen und Dokumenten ist bei uns
+    vor Ort zu besichtigen — nach Absprache auch für Gruppen.
 
--   :material-palette:{ .lg .middle } &nbsp; **Light & dark**
+-   :material-book-open-variant:{ .lg .middle } &nbsp; **Wissenschaftlich fundiert**
 
     ---
 
-    Material theme with palette toggle, code highlighting, and clean typography.
+    Hinter jedem nachgebauten Objekt stecken Quellenstudium und
+    Fachliteratur. Wir erklären gerne, warum wir etwas so gemacht haben
+    — und was wir noch nicht wissen.
 
 </div>
 
-## Get started in three steps
+## Ratatöskr — das Eichhörnchen
 
-<div class="grid" markdown>
+In der nordischen Mythologie läuft **Ratatöskr** den Weltenbaum Yggdrasil
+auf und ab und trägt Botschaften zwischen dem Adler in den Wipfeln und der
+Schlange in den Wurzeln.
 
-1.  __Clone the repo__
+Für uns steht dieser ruhelose Bote für unsere Überzeugung: Wissen verbindet
+die Welten — Vergangenheit und Gegenwart, Forschung und Erlebnis,
+Gelehrte und Neugierige.
 
-    ```bash
-    git clone https://github.com/britz/ratatoskr
-    cd ratatoskr
-    ```
-
-2.  __Install & preview__
-
-    ```bash
-    pip install -r requirements.txt
-    mkdocs serve
-    ```
-
-3.  __Write notes__
-
-    Point Obsidian at the `docs/` folder and start writing. Every push to `main`
-    rebuilds and publishes the site.
-
-</div>
+> [!quote] Prosa-Edda, Gylfaginning
+> „Ein Eichhörnchen heißt Ratatöskr, das läuft den Eschenbaum hinauf und
+> hinab und trägt Fehdeworte zwischen dem Adler oben und Níðhöggr unten."
