@@ -1,0 +1,21 @@
+# MkDocs build output
+site/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Obsidian local state (keep .obsidian/ committed, drop workspace + cache)
+docs/.obsidian/workspace*
+docs/.obsidian/cache
+docs/.obsidian/cache.json
+docs/.trash/

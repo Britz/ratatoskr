@@ -1,0 +1,4 @@
+mkdocs-material>=9.5,<10
+mkdocs-obsidian-support-plugin>=1.4
+mkdocs-glightbox>=0.4
+pymdown-extensions>=10

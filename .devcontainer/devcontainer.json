@@ -1,0 +1,54 @@
+{
+  "name": "Ratatöskr MkDocs",
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.12",
+
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "postCreateCommand": "pip install --user --upgrade pip && pip install --user -r requirements.txt",
+
+  "postAttachCommand": {
+    "hint": "echo '\\n→ Run \"mkdocs serve\" to preview the site at http://localhost:8000\\n'"
+  },
+
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "MkDocs preview",
+      "onAutoForward": "openPreview",
+      "protocol": "http"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "redhat.vscode-yaml",
+        "yzhang.markdown-all-in-one",
+        "DavidAnson.vscode-markdownlint",
+        "bierner.markdown-mermaid"
+      ],
+      "settings": {
+        "yaml.schemas": {
+          "https://squidfunk.github.io/mkdocs-material/schema.json": "mkdocs.yml"
+        },
+        "yaml.customTags": [
+          "!!python/name:material.extensions.emoji.twemoji",
+          "!!python/name:material.extensions.emoji.to_svg"
+        ],
+        "files.associations": {
+          "mkdocs.yml": "yaml"
+        },
+        "[markdown]": {
+          "files.trimTrailingWhitespace": false,
+          "editor.wordWrap": "on"
+        },
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
+      }
+    }
+  },
+
+  "remoteUser": "vscode"
+}
