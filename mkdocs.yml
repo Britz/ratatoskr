@@ -49,7 +49,6 @@ theme:
 plugins:
   - search
   - tags
-  - obsidian-support
   - glightbox:
       auto_caption: true
       caption_position: bottom

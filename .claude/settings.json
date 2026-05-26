@@ -1,0 +1,47 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(pdftotext *)",
+      "Bash(pdfgrep *)",
+      "Bash(pdftk *)",
+      "Bash(pdfinfo *)",
+      "Bash(command -v *)",
+      "Bash(mkdir *)",
+      "Bash(ls *)",
+      "Bash(awk *)",
+      "Bash(python3 -c \"import fitz; print\\('PyMuPDF', fitz.__version__\\)\")",
+      "WebSearch",
+      "WebFetch(domain:www.worldcat.org)",
+      "WebFetch(domain:www.williamdam.dk)",
+      "Edit(.claude/skills/**)",
+      "Read(/home/jobr03/.claude/**)",
+      "Edit(/.claude/skills/vault-eintrag/**)",
+      "Edit(/.claude/skills/vault-suche/**)",
+      "Edit(/.claude/skills/recherche/**)",
+      "Edit(/.claude/skills/pdf-lesen/**)",
+      "Edit(/.claude/skills/buchscan-import/**)",
+      "Bash(mkdir -p /workspaces/ratatoskr/.claude/skills/bild-bearbeiten)",
+      "Edit(/.claude/skills/bild-bearbeiten/**)",
+      "Bash(echo \"=== Vault search ===\" && find /workspaces/ratatoskr/Reenactment -maxdepth 4 -type f \\\\\\( -iname '*cover*' -o -iname '*buchcover*' \\\\\\) 2>/dev/null && echo \"=== Workspace root ===\" && find /workspaces/ratatoskr -maxdepth 2 -type f \\\\\\( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \\\\\\) -not -path '*/Reenactment/*' -not -path '*/.git/*' -not -path '*/.venv/*' -not -path '*/site/*' 2>/dev/null | head && echo \"=== Home ===\" && find ~ -maxdepth 3 -type f \\\\\\( -iname '*cover*' -o -iname '*buch*' \\\\\\) 2>/dev/null | head)",
+      "Read(//home/jobr03/**)",
+      "Bash(cp ~/.claude/tmp/keltische_cover_v4.png /workspaces/ratatoskr/Reenactment/Anhang/Buecher/KeltischeMuster/cover.png)",
+      "Bash(cp ~/.claude/tmp/oslo_cover_v3.png /workspaces/ratatoskr/Reenactment/Anhang/Buecher/Oslo/cover.png)",
+      "Bash(apt list *)",
+      "Bash(mkdir -p ~/.claude/tmp/covers)",
+      "Bash(gs -dNOPAUSE -dBATCH -sDEVICE=jpeg -r150 -dFirstPage=1 -dLastPage=1 -sOutputFile=/home/jobr03/.claude/tmp/covers/edda_p1.jpg /workspaces/ratatoskr/Reenactment/Anhang/Buecher/Die_Edda.pdf)",
+      "Bash(mkdir -p /workspaces/ratatoskr/Reenactment/Anhang/Buecher/Edda *)",
+      "Bash(gs -dNOPAUSE -dBATCH -sDEVICE=jpeg -r100 -dFirstPage=1 -dLastPage=3 -sOutputFile=/home/jobr03/.claude/tmp/covers/birka_text_p%d.jpg /workspaces/ratatoskr/Reenactment/Anhang/Buecher/Birka/arbman_1943_birka_i_text.pdf)",
+      "Bash(gs -dNOPAUSE -dBATCH -sDEVICE=jpeg -r100 -dFirstPage=1 -dLastPage=2 -sOutputFile=/home/jobr03/.claude/tmp/covers/birka_taf_p%d.jpg /workspaces/ratatoskr/Reenactment/Anhang/Buecher/Birka/arbman_1943_birka_i_tafeln.pdf)",
+      "Bash(rm -rf /home/jobr03/.claude/tmp/covers)",
+      "Bash(cd /workspaces/ratatoskr && rm -rf /home/jobr03/.claude/tmp/covers && ls /workspaces/ratatoskr/Reenactment/Anhang/Buecher/)"
+    ],
+    "additionalDirectories": [
+      ".claude/skills",
+      "/workspaces/ratatoskr/.claude/skills",
+      "/home/jobr03/.claude/tmp/covers",
+      "/home/jobr03/.claude/tmp"
+    ]
+  }
+}

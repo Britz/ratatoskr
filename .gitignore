@@ -19,3 +19,13 @@ docs/.obsidian/workspace*
 docs/.obsidian/cache
 docs/.obsidian/cache.json
 docs/.trash/
+
+#mount folder for obsidian vault
+Reenactment/
+
+# Devcontainer: lokale UID/GID (erzeugt von initializeCommand)
+.devcontainer/.local_uid
+.devcontainer/.local_gid
+
+# Temporäre Downloads / Scratch (siehe CLAUDE.md)
+tmp/
