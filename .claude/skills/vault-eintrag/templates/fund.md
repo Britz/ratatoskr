@@ -3,11 +3,13 @@ title: "{{OBJEKT}} aus {{KONTEXT}}"
 type: Fundbelegeintrag
 kategorie: {{KATEGORIE oder unbekannt}}
 fundort: "{{FUNDORT}}"
-grab: "{{GRAB-ID oder unbekannt}}"
+fundkontext: {{Grab | Siedlung | Hort/Depot | Opferfund | Lösfund/Streufund | Hafen | Werkstatt | unbekannt}}
+komplex: "{{[[Grab-/Fundkomplex-Eintrag]] – nur bei geschlossenem Komplex, sonst Zeile weglassen}}"
 datierung: "{{DATIERUNG oder unbekannt}}"
 material: {{MATERIAL oder unbekannt}}
 aufbewahrung: {{MUSEUM oder unbekannt}}
-museum_nr: {{INV-NR oder unbekannt}}
+museum_nr: "{{INV-NR oder unbekannt}}"
+ortsnummer: "{{Fornlämning/RAÄ (SE), Askeladden-ID (NO), sb.-Nr (DK) – oder weglassen}}"
 tags:
   - Fundbelegeintrag
   - {{Fundort-Tag}}
@@ -22,7 +24,9 @@ tags:
 | Feld | Information |
 | --- | --- |
 | **Fundort** | [[{{Fundort-MD}}]] – {{Beschreibung oder unbekannt}} |
-| **Grab** | [[{{Grab-MD}}]] oder unbekannt |
+| **Fundkontext** | {{Grab / Siedlung / Hort/Depot / Lösfund / … }} |
+| **Komplex** | {{[[Grab-/Fundkomplex-Eintrag]] – nur bei geschlossenem Komplex, sonst „kein Komplex (Siedlungs-/Streufund)"}} |
+| **Ortsnummer** | {{Fornlämning/RAÄ/Askeladden/sb. oder unbekannt}} |
 | **Datierung** | {{DATIERUNG oder "aus den vorliegenden Quellen nicht belegt"}} |
 | **Material** | {{MATERIAL oder "aus den vorliegenden Quellen nicht belegt"}} |
 | **Aufbewahrung** | {{MUSEUM oder "aus den vorliegenden Quellen nicht belegt"}} |

@@ -9,6 +9,9 @@ Projekt-lokale Claude-Skills für die Arbeit am Ratatoskr-Vault. Jeder Skill ist
 | [vault-eintrag](vault-eintrag/SKILL.md) | Buch/Fund/Fundort/Grab/Webquelle als neue MD anlegen | "Neuer Eintrag", "Fund X dokumentieren" |
 | [vault-suche](vault-suche/SKILL.md) | Volltext, Frontmatter, Wikilinks, kaputte Links, Bildbeschreibung | "Wo wird X erwähnt", "Kaputte Links finden" |
 | [recherche](recherche/SKILL.md) | Web-Recherche mit Quellennachweis, faktentreu | "Recherchiere X", "Quellen zu Y suchen" |
+| [fundbild-recherche](fundbild-recherche/SKILL.md) | Offiziell belegte Fund-/Ausstellungsbilder online suchen (Museumskataloge), Provenienz + Lizenz prüfen | "Such ein Fundbild zu X", "Katalogbild beschaffen" |
+| [produkt-recherche](produkt-recherche/SKILL.md) | Markt-Recherche: Hersteller + Webshops/Händler eines Artikels finden, „laut Händler"/„laut Hersteller" (kein Beleg), ähnliche Artikel | "Wer stellt X her / verkauft X", "Bezugsquelle für Y" |
+| [fund-suche](fund-suche/SKILL.md) | Objekt parallel suchen: lokal Text (vault-suche) + lokal Bild (vault-bildsuche) + online belegt (fundbild-recherche) + Markt/kommerziell (produkt-recherche); VLM-Bildmerkmale schärfen Online- und Markt-Suche, Befunde gegenvalidieren | "Such mir alles zu Fund X", "Fundsuche im Vault und online" |
 | [bild-bearbeiten](bild-bearbeiten/SKILL.md) | Bilder zuschneiden, entzerren, aufhellen, Format/Größe, JPGs → PDF | "Scan begradigen", "Bild zuschneiden", "JPGs zu PDF" |
 
 ## Gemeinsame Regeln (CLAUDE.md → Faktentreue)

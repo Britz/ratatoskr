@@ -38,7 +38,7 @@ tags:
 
 ## Fundzeichnungen
 
-{{Relative Links zu Bildern unter ../../Anhang/Graeber/(GRAB-ID)/, wenn vorhanden.}}
+{{Relative Links zu Bildern unter ../../Anhang/Fundkomplexe/(GRAB-ID)/, wenn vorhanden.}}
 
 ## Quellennachweise
 

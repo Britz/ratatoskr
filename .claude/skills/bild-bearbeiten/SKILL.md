@@ -1,6 +1,6 @@
 ---
 name: bild-bearbeiten
-description: Bearbeitet Bilder (JPEG/PNG/TIFF/PDF-Seiten) für den Vault — zuschneiden, drehen/entzerren, aufhellen/kontrastieren, Größe ändern, Format umwandeln, Metadaten lesen/setzen, mehrere Bilder zu PDF zusammenfügen. Wird ausgelöst, wenn der Nutzer "Bild zuschneiden", "Scan begradigen", "Scan aufhellen", "Bild verkleinern", "JPG zu PDF", "Tafel ausschneiden", "EXIF prüfen" oder ähnlich sagt. Output-Konvention: temporäre Zwischenstände nach `~/.claude/tmp/`, finale Vault-Versionen erst nach Bestätigung in den Anhang-Ordnern. Bei Bilddateien des Vaults arbeitet die Skill **nicht in-place** ohne ausdrückliche Erlaubnis, sondern legt eine neue Datei mit Suffix an.
+description: Bearbeitet Bilder (JPEG/PNG/TIFF/PDF-Seiten) für den Vault — zuschneiden, drehen/entzerren, aufhellen/kontrastieren, Größe ändern, Format umwandeln, Metadaten lesen/setzen, mehrere Bilder zu PDF zusammenfügen. Enthält zusätzlich einen Helfer für Tafel-Verifikation gegen den Vault-Bildindex (Cache-Lookup, Preset-Crop, Beschreibungs-Grep). Wird ausgelöst, wenn der Nutzer "Bild zuschneiden", "Scan begradigen", "Scan aufhellen", "Bild verkleinern", "JPG zu PDF", "Tafel ausschneiden", "EXIF prüfen", "Tafelnummer ablesen", "Caption rauskratzen" oder ähnlich sagt. Output-Konvention: temporäre Zwischenstände nach `~/.claude/tmp/`, finale Vault-Versionen erst nach Bestätigung in den Anhang-Ordnern. Bei Bilddateien des Vaults arbeitet die Skill **nicht in-place** ohne ausdrückliche Erlaubnis, sondern legt eine neue Datei mit Suffix an.
 ---
 
 # bild-bearbeiten
@@ -124,7 +124,86 @@ Für Funde, wo eine ganze Buchseite mehrere Tafeln zeigt:
 
 1. PDF-Seite (oder JPG) öffnen, visuell die Tafel-Box identifizieren.
 2. Mit `-crop` ausschneiden, evtl. `-trim` für sauberen Rand.
-3. Eigene Datei nach `Reenactment/Anhang/Funde/<Fundname>/` (oder `Anhang/Graeber/<GrabID>/`) — Konvention siehe CLAUDE.md (Buchscans liegen weiterhin im Buch-Anhang; Funddetails dürfen separat als `<fund>_<beschreibung>.jpg` im Fund-Anhang liegen).
+3. Eigene Datei nach `Reenactment/Anhang/Funde/<Fundname>/` (oder `Anhang/Fundkomplexe/<KomplexID>/` für Grab-/Hortfunde) — Konvention siehe CLAUDE.md (Buchscans liegen weiterhin im Buch-Anhang; Funddetails dürfen separat als `<fund>_<beschreibung>.jpg` im Fund-Anhang liegen).
+
+## Tafel-Verifikations-Workflow (Helfer: `tools/vault_pdf_detail.py`)
+
+Wenn man die Treffer der [[vault-bildsuche]] gegen den Tafelband prüfen will (Tafelnummer ablesen, Bildunterschriften lesen, Bj-/Grab-Zuordnung verifizieren), gibt es ein dediziertes Hilfsskript: `python3 tools/vault_pdf_detail.py`. Drei Subcommands:
+
+### 1. `lookup` — PDF-Seite/Bild im Index nachschlagen
+
+```bash
+# Eine konkrete PDF-Seite (gibt Cache-Pfad + VLM-Beschreibung aus)
+python3 tools/vault_pdf_detail.py lookup \
+  Reenactment/Anhang/Buecher/Arbman_1943_Birka_I_Die_Graeber/arbman_1943_birka_i_tafeln.pdf \
+  --page 182
+
+# Alle indizierten Seiten/Items zu einer Quelle
+python3 tools/vault_pdf_detail.py lookup \
+  Reenactment/Anhang/Abhandlungen/wikingerschwerter_hedendorf.pdf
+```
+
+Output enthält den Pfad zur gerenderten PNG (`~/.claude/cache/vault_image_index/pdf_pages/<hash>/page_NNNN.png`) — den man dann direkt mit dem Read-Tool öffnen kann.
+
+### 2. `crop` — Tafel-Region per Preset oder Koordinaten ausschneiden
+
+Presets sind auf den typischen Birka/Tafel-Aufbau zugeschnitten (Tafelnummer oben, Caption unten):
+
+| Preset | Wozu |
+|---|---|
+| `header` | obere 15% — Tafelnummer „Taf. NNN" |
+| `topleft` / `topright` | obere Ecken (Tafelnummer steht je nach Seite links oder rechts) |
+| `caption` | untere 15% — Bildunterschrift mit Grab-/Inv.-Nrn. |
+| `top` / `bottom` / `left` / `right` | halbe Tafel |
+| `center` | mittlere 50% |
+
+```bash
+# Beschriftung am unteren Rand ausschneiden (z.B. "1. Gr. 944 — 2. Gr. 644 …")
+python3 tools/vault_pdf_detail.py crop \
+  ~/.claude/cache/vault_image_index/pdf_pages/<hash>/page_0182.png \
+  --preset caption
+
+# Tafelnummer oben links
+python3 tools/vault_pdf_detail.py crop \
+  ~/.claude/cache/vault_image_index/pdf_pages/<hash>/page_0182.png \
+  --preset topleft
+
+# Freier Crop in Prozent (akzeptiert 0–1 oder 0–100)
+python3 tools/vault_pdf_detail.py crop <bild> --pct 0,85,100,15
+
+# Freier Crop in Pixeln (X,Y,W,H)
+python3 tools/vault_pdf_detail.py crop <bild> --px 0,1037,956,183
+```
+
+Default-Output: `~/.claude/tmp/<stem>_<tag><ext>` — JPEG-Qualität 92, sonst PNG. Mit `-o <pfad>` explizit setzen.
+
+### 3. `grep` — Volltextsuche über die VLM-Beschreibungen
+
+Komplementär zur Embedding-Suche (die Embeddings finden semantisch ähnliches, `grep` findet wörtliche Zeichenketten):
+
+```bash
+# Alle Tafeln mit "Taf. 162" in der Beschreibung
+python3 tools/vault_pdf_detail.py grep "Taf. 162"
+
+# Auf PDF-Seiten einschränken
+python3 tools/vault_pdf_detail.py grep "Knochenkamm" --kind pdf_page
+
+# Nur in einer bestimmten Quelle suchen
+python3 tools/vault_pdf_detail.py grep "Pferdekamm" --source arbman_1943
+```
+
+### Workflow Bildähnlichkeitssuche → Tafelnummer ablesen
+
+```text
+1. vault_image_search.py search --like <replik-foto>       # liefert PDF-Seiten-Treffer mit Score
+2. vault_pdf_detail.py lookup <pdf> --page <seite>         # holt Cache-Pfad
+3. Read auf den Cache-PNG-Pfad                             # visuelle Sichtung
+4. vault_pdf_detail.py crop … --preset topleft|topright   # Tafelnummer freischneiden
+5. vault_pdf_detail.py crop … --preset caption            # Grab-/Inv.-Nrn. ablesen
+6. Erst wenn Tafelnummer + Beschriftung bestätigt: in Vault-Eintrag eintragen
+```
+
+**Wichtig (Faktentreue):** Die VLM-Beschreibung im Index ist nicht belastbar. Die Tafelnummer immer per `crop --preset topleft/topright` aus dem Originalscan verifizieren, bevor sie in einen Vault-Eintrag wandert.
 
 ## Wichtige Regeln
 

@@ -31,9 +31,9 @@ tags:
 
 {{Pro Befundtyp (Gräberfeld, Siedlung, Hafen) ein eigener Unterabschnitt, nur mit belegten Angaben.}}
 
-### Im Vault dokumentierte Gräber
+### Im Vault dokumentierte Fundkomplexe (Gräber / Horte)
 
-{{Wikilinks zu Gräbern unter ../Graeber/, sofern vorhanden.}}
+{{Wikilinks zu Gräbern/Fundkomplexen unter ../Fundkomplexe/, sofern vorhanden.}}
 
 ## Bedeutung für das Reenactment
 

@@ -82,5 +82,5 @@ Eingabe: "Importier `~/Downloads/Scan 2026-05-20.pdf` ins AROS-Buch, Seite 45, K
 Ergebnis:
 - Kopie: `Reenactment/Anhang/Buecher/AROS/aros_seite_45_kaemme.pdf`
 - Original: `~/Downloads/moved_Scan_2026-05-20.pdf`
-- Neue Zeile in `Reenactment/Literatur/Buecher/AROS_das_Aarhus_der_Wikinger.md`:
+- Neue Zeile in `Reenactment/Literatur/Buecher/Skov_2006_AROS_Aarhus.md`:
   `| [aros_seite_45_kaemme.pdf](../../Anhang/Buecher/AROS/aros_seite_45_kaemme.pdf) | 45 | Kämme |`
