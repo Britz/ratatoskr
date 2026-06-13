@@ -1,31 +1,12 @@
-# MkDocs build output
-site/
-
-# Python
-__pycache__/
-*.py[cod]
-.venv/
-venv/
-.env
+# ============================================================
+#  OEFFENTLICHES Repo (britz/ratatoskr) = nur die fertig gebaute Site.
+#  Inhalt wird im PRIVATEN Repo aus dem Vault gebaut und nach www/ gepusht
+#  (tools/publish_site.sh). www/ WIRD getrackt — nicht ignorieren!
+#  Hier landet NIE der Vault, nie (c)-Quellen, nie Kaufdaten.
+# ============================================================
 
 # OS / editor
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
-
-# Obsidian local state (keep .obsidian/ committed, drop workspace + cache)
-docs/.obsidian/workspace*
-docs/.obsidian/cache
-docs/.obsidian/cache.json
-docs/.trash/
-
-#mount folder for obsidian vault
-Reenactment/
-
-# Devcontainer: lokale UID/GID (erzeugt von initializeCommand)
-.devcontainer/.local_uid
-.devcontainer/.local_gid
-
-# Temporäre Downloads / Scratch (siehe CLAUDE.md)
-tmp/

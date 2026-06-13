@@ -1,72 +1,27 @@
-# Ratatöskr
+# Ratatöskr — Webseite
 
-A static website rendered from an [Obsidian](https://obsidian.md) vault using
-[MkDocs Material](https://squidfunk.github.io/mkdocs-material/) and deployed to
-GitHub Pages.
+Die öffentliche Webseite des Wikingerzeit-Reenactment-Projekts **Ratatöskr**
+(lebendige Geschichte & kleines Museum).
 
-## Layout
+🌐 **[britz.github.io/ratatoskr](https://britz.github.io/ratatoskr/)**
 
-```
-.
-├── docs/              # Obsidian vault (markdown lives here)
-│   ├── index.md       # site homepage
-│   └── javascripts/   # MathJax config
-├── mkdocs.yml         # site configuration
-├── requirements.txt   # Python build dependencies
-└── .github/workflows/deploy.yml   # CI build → GitHub Pages
-```
+## Was ist dieses Repo?
 
-The `docs/` folder *is* the Obsidian vault — open it in Obsidian and edit
-notes directly. The build picks them up as-is.
+Hier liegt **ausschließlich die fertig gebaute Webseite** — statisches HTML im
+Repo-Root, das GitHub Pages direkt ausliefert.
 
-## Local development
+> **Nicht von Hand bearbeiten.** Der Inhalt ist ein Build-Ergebnis.
 
-### Option A — Devcontainer (recommended)
+Quelle der Wahrheit ist ein **privater** Obsidian-Vault (Repo `ratatoskr-private`).
+Daraus wird die Seite gefiltert generiert und hierher gepusht — öffentlich wird
+nur, was ausdrücklich freigegeben ist:
 
-If you have Docker + the VS Code **Dev Containers** extension (or open the repo
-in a GitHub Codespace), the environment is fully described by
-[`.devcontainer/devcontainer.json`](.devcontainer/devcontainer.json):
+- nur Seiten mit `publish: true` im Frontmatter (default-deny),
+- nur lizenzkonforme Bilder (Prüfung über einen Anhang-Index),
+- private Inhalte (Kaufdaten, Anbieter, ©-Scans) bleiben im privaten Vault.
 
-1. Open the folder in VS Code → *Reopen in Container*.
-2. Wait for `pip install -r requirements.txt` to finish (one-time).
-3. Run `mkdocs serve` — port `8000` is auto-forwarded to your host.
+## Deployment
 
-### Option B — Local Python venv
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-mkdocs serve         # live preview at http://127.0.0.1:8000
-mkdocs build         # produce static site in ./site
-```
-
-## Obsidian features supported
-
-Translated automatically by the
-[`mkdocs-obsidian-support-plugin`](https://github.com/ndy2/mkdocs-obsidian-support-plugin):
-
-- `[[wikilinks]]` and `[[wikilinks|aliases]]`
-- `![[image.png]]` and `![[note]]` embeds
-- `> [!note]` / `> [!tip]` / `> [!warning]` callouts → Material admonitions
-- Tags via the built-in MkDocs `tags` plugin
-- Math (`$inline$`, `$$block$$`) via MathJax
-
-## Deploying
-
-1. Push to `main`.
-2. Enable Pages with *GitHub Actions* as the build source (one-time).
-   Easiest from inside the devcontainer:
-
-   ```bash
-   bash .devcontainer/enable-pages.sh
-   ```
-
-   That script calls `gh api repos/<owner>/<repo>/pages -X POST -f build_type=workflow`
-   and then triggers the workflow — equivalent to flipping the **Source**
-   dropdown under *Settings → Pages* in the UI.
-3. The workflow at `.github/workflows/deploy.yml` builds and publishes the site
-   on every subsequent push to `main`.
-
-The site URL will be `https://britz.github.io/ratatoskr/`.
+GitHub Pages, **Deploy from a branch** → `main` / `(root)`. Die Datei `.nojekyll`
+schaltet die Jekyll-Verarbeitung ab, sodass das HTML unverändert serviert wird.
+Ein Build-Workflow ist nicht nötig: neue Stände werden bereits gebaut committet.
