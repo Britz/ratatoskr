@@ -1,5 +1,3 @@
-/* ---- Landing page hero ---- */
-
 .md-typeset .hero {
   text-align: center;
   padding: 3rem 0 1.5rem;
@@ -30,16 +28,6 @@
   margin: 0 auto 2rem;
 }
 
-/* CTA-Buttons (.md-button--primary) ───────────────────────────────────────
-   Zwei zusammenhängende Fehler behoben:
-   1) Glow/Halo am Button-Text: Der Titel-Callout (.admonition.big > p) vererbt
-      seinen text-shadow auf den darin liegenden Button-Text — dadurch wirkt er
-      dauerhaft verwaschen. Im Ruhezustand abschalten, nur bei Hover als Halo.
-   2) Hover ohne sichtbare Wirkung: Bei `palette.primary: white` färbt Material
-      primäre Buttons mit der Linkfarbe (--md-typeset-a-color), und seine
-      Hover-Regel nutzt --md-accent-fg-color — beide setzen wir auf dasselbe
-      Lila (--rt-accent), daher waren Ruhe- und Hover-Zustand identisch. Hover
-      hier explizit absetzen: dunkleres Lila + Halo + leichtes Anheben. */
 .md-typeset .md-button {
   text-shadow: none;
   transition: color 125ms, background-color 125ms, border-color 125ms,
@@ -55,13 +43,6 @@
   box-shadow: 0 4px 14px color-mix(in oklab, var(--rt-ink) 20%, transparent);
 }
 
-/* Primär-Buttons im DUNKEL-Schema: Materials „Linkfarbe statt Weiß"-Trick
-   greift nur bei primary:white (helles Schema) — im dunklen Schema fielen die
-   Buttons sonst auf eine falsche (blaue) Default-Farbe zurück. Hier explizit
-   das aufgehellte „Zart-Lila" (--rt-accent, derselbe Ton wie die
-   Titelleisten-Trennlinie --rt-header-rule) als Füllung, Text in Paper-Farbe
-   (= dunkel) für Kontrast. Hover hellt zusätzlich auf (statt wie hell gegen
-   Schwarz abzudunkeln) und hält den Text dunkel. */
 [data-md-color-scheme="slate"] .md-typeset .md-button--primary {
   background-color: var(--rt-accent);
   border-color: var(--rt-accent);
@@ -74,8 +55,6 @@
   color: var(--rt-paper);
 }
 
-/* ---- Feature grid tweaks ---- */
-
 .md-typeset .grid.cards > ul > li {
   border-radius: 0.5rem;
   transition: transform 120ms ease, box-shadow 120ms ease;
@@ -86,19 +65,11 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
-/* Slightly larger leading icon inside cards */
 .md-typeset .grid.cards .twemoji.lg svg {
   height: 1.6em;
   width: 1.6em;
 }
 
-/* ── Hilfsklasse `.schatten` ───────────────────────────────────────────────
-   Dezenter Schlagschatten, an beliebige Inhalte anhängbar:
-     • Bild/Block via attr_list:  ![…](…){.schatten}   bzw.  …{.schatten}
-     • Callout via Klassen-Syntax: > [!note|.schatten] Titel
-   Basis ist --rt-ink: im hellen Schema ein dunkler Schatten, im dunklen ein
-   dezenter heller Schimmer (wie bei den Teaser-Kacheln) — passt also in beiden
-   Modi zum Grund. `.schatten-stark` ist die kräftigere Variante. */
 .md-typeset .schatten {
   box-shadow: 0 4px 16px color-mix(in oklab, var(--rt-ink) 16%, transparent);
 }
@@ -106,8 +77,11 @@
   box-shadow: 0 8px 26px color-mix(in oklab, var(--rt-ink) 26%, transparent);
 }
 
-/* On the homepage, hide the auto-generated edit / "Was this helpful?" UI
-   for a cleaner landing experience. */
+.md-typeset .shadow,
+.md-typeset .shadow img {
+  filter: drop-shadow(0 10px 26px color-mix(in oklab, var(--rt-ink) 22%, transparent));
+}
+
 body[data-md-color-scheme] .md-content__button {
   display: revert;
 }
@@ -115,16 +89,11 @@ body[data-md-color-scheme] .md-content__button {
   display: none;
 }
 
-/* ====================================================================
-   Ratatöskr — globales Design (site-weit)
-   Paper #fafaf7 · Tinte #0a0a0a · Akzent Lila · Highlight Grün
-   Überschriften Herculanum (Cinzel als Web-Fallback) · Trenner Futhark
-   ==================================================================== */
 :root {
   --rt-paper:     #fafaf7;
   --rt-ink:       #0a0a0a;
-  --rt-accent:    #6d28d9;   /* Lila */
-  --rt-highlight: #16a34a;   /* Grün */
+  --rt-accent:    #6d28d9;
+  --rt-highlight: #16a34a;
   --rt-display:   "Herculanum", "Trajan Pro", "Cinzel", "Cormorant Garamond", Georgia, serif;
 }
 
@@ -134,18 +103,10 @@ body[data-md-color-scheme] .md-content__button {
   --md-typeset-a-color:  var(--rt-accent);
 }
 
-/* Dunkles Schema (slate): dieselben --rt-*-Tokens, dunkle Werte. Pergament →
-   warmes Dunkel, Tinte → warmes Hell, Lila aufgehellt (Kontrast auf dunklem
-   Grund). Weil direkte var(--rt-paper)/var(--rt-ink)-Nutzungen in Nachfahren von
-   <body> (Header-Schleier, Trenner, Titel-Halo, Teaser) stehen, fließen sie
-   automatisch hier ein — das Schema-Attribut sitzt auf <body>.
-   AUSNAHME: die abgeleiteten Header-Tokens --rt-header-rule/--rt-header-solid
-   sind auf :root (html) deklariert; deren var(--rt-paper) würde sonst den hellen
-   html-Wert behalten → hier erneut bilden. */
 [data-md-color-scheme="slate"] {
-  --rt-paper:   #1b1a17;   /* warmes Dunkel statt Pergament */
-  --rt-ink:     #ece8e0;   /* warmes Hell statt Tinte */
-  --rt-accent:  #b69cff;   /* aufgehelltes Lila für Kontrast */
+  --rt-paper:   #1b1a17;
+  --rt-ink:     #ece8e0;
+  --rt-accent:  #b69cff;
   --rt-header-rule:  color-mix(in oklab, var(--rt-accent) 28%, transparent);
   --rt-header-solid: color-mix(in oklab, var(--rt-paper) 86%, transparent);
   --md-default-bg-color: var(--rt-paper);
@@ -153,7 +114,6 @@ body[data-md-color-scheme] .md-content__button {
   --md-typeset-a-color:  var(--rt-accent);
 }
 
-/* Überschriften (und Header-Wortmarke) in der Display-Schrift */
 .md-typeset h1, .md-typeset h2, .md-typeset h3,
 .md-typeset h4, .md-header__title {
   font-family: var(--rt-display);
@@ -161,7 +121,6 @@ body[data-md-color-scheme] .md-content__button {
   letter-spacing: 0.01em;
 }
 
-/* Futhark-Trenner: jedes `---` (hr) wird zur Runenleiste ────────────── */
 .md-typeset hr {
   border: 0;
   border-top: 1px solid color-mix(in oklab, var(--rt-ink) 16%, transparent);
@@ -182,68 +141,248 @@ body[data-md-color-scheme] .md-content__button {
   opacity: 0.85;
 }
 
-/* Breitere Seite — weniger Rand links/rechts. Material-Default ist
-   max-width: 61rem; wir geben dem Raster (Inhalt, Kopfzeile, Footer) mehr
-   Breite. (Die Tab-Leiste hat ihre eigene Regel mit max-width: none.) */
 .md-grid {
   max-width: 72rem;
 }
 
-/* Seiten mit `hide: navigation` (z. B. „Über uns") sollen denselben Inhalts-
-   block behalten wie Seiten MIT Navigation — sonst dehnt sich der Inhalt in
-   den frei gewordenen Nav-Platz und wird breiter als überall sonst.
-   Lösung: die Primär-Sidebar nicht entfernen (Material setzt sonst per
-   `[hidden]` ein `display: none`, das ihren Platz kollabieren lässt), sondern
-   nur unsichtbar schalten — der Kasten bleibt im Layout, der Inhalt behält
-   seine Breite und Position.
-   • Nur ab dem Desktop-Breakpoint (>=76.25em), wo die Nav sonst inline Platz
-     einnimmt — auf schmaleren Schirmen ist sie ohnehin ein Off-Canvas-Drawer,
-     da gibt es keinen Breitenunterschied („wenn genug Platz ist"), und der
-     `[hidden]`-Default (display:none) soll dort greifen.
-   • Die Startseite (full-bleed Hero) ist ausgenommen: sie blendet zusätzlich
-     das Inhaltsverzeichnis aus (Sekundär-Sidebar `hidden`), woran wir sie
-     erkennen — dort soll der Inhalt bewusst die volle Breite nutzen. */
 @media screen and (min-width: 76.25em) {
   .md-main__inner:not(:has(> .md-sidebar--secondary[hidden])) > .md-sidebar--primary[hidden] {
-    display: block;        /* Material-Default statt des [hidden]-display:none */
-    visibility: hidden;    /* unsichtbar, aber Platz bleibt erhalten */
+    display: block;
+    visibility: hidden;
   }
 }
-/* `hide: navigation` heißt: KEINE Navigation — auch nicht als Hamburger-Menü,
-   wenn das Fenster unter den Desktop-Breakpoint schrumpft. Material blendet die
-   inline-Tabs schmal aus und zeigt stattdessen den Drawer-Button; auf Seiten
-   ohne Navigation soll auch der weg sein. Erkennung: die Primär-Sidebar trägt
-   dann `[hidden]` (siehe oben). Die Sidebar/Drawer selbst ist über schmale
-   Schirme ohnehin per `[hidden]` (display:none) ausgeblendet — hier fehlt nur
-   noch der Auslöser-Button. */
-body:has(.md-sidebar--primary[data-md-type="navigation"][hidden]) .md-header__button[for="__drawer"] {
+.md-header__button[for="__drawer"] {
   display: none;
 }
 
-/* Kopfzeile im Stil des Ribe Vikingecenter ───────────────────────────
-   Einzeilige Kopfzeile: Logo/Wortmarke links, Navigation mittig, Suche
-   rechts (Tabs sind via overrides/partials/header.html INLINE im Header).
-   • Grund-Zustand: transparent, „schwebend", kein Schlagschatten.
-   • Beim Scrollen: deckend (Pergament + leichtes Blur), schrumpfende Tabs,
-     nach rechts auslaufende Akzentlinie als Trenner (vgl. `.p-header__line`).
-   • Header ist sticky -> das Menü bleibt sichtbar.
-   • Aktiver/gehoverter Menüpunkt: kurzer, aus der Mitte wachsender
-     Akzentstrich (vgl. `.o-nav__item:after`) + Text in Akzentfarbe.
-   • Suche eingeklappt als Lupe; Hover = Mikro-Animation (Lupe wächst).
-   Farben aus dem Theme: Lila (--rt-accent) → Grün (--rt-highlight). */
-:root {
-  /* Trennlinie Menü↔Inhalt = zugleich die Linie, auf der der aktive
-     Menüstrich sitzt (dünne Akzentlinie). */
-  --rt-header-rule: color-mix(in oklab, var(--rt-accent) 22%, transparent);
-  --rt-header-solid: color-mix(in oklab, var(--rt-paper) 86%, transparent);
+/* ── Navigation (links) & Inhaltsverzeichnis (rechts) ein-/ausklappen ──────────
+   REIN CSS, kein JS. Beide Seiten identisch, gleiches Verhalten bei jeder Breite.
+   Markup (main.html): je Seite eine versteckte, fokussierbare Checkbox
+   (#rt-nav-toggle / #rt-toc-toggle); der Eck-Knopf ist ihr <label>. Sichtbarkeit
+   über html:has(:checked). Default (unchecked) = natürlicher Zustand der Breite.
+
+   Spalten- vs. Overlay-Regime über die BESTEHENDEN Material-Breakpoints, so dass
+   beim Verkleinern ZUERST rechts, dann links die Spalte verlässt:
+     • Nav (links):  Spalte >= 60em,     Overlay < 60em
+     • TOC (rechts): Spalte >= 76.25em,  Overlay < 76.25em
+   Breit: Knopf blendet die Spalte aus (Inhalt rückt nach). Schmal: Knopf öffnet
+   die Liste als Overlay ÜBER dem Text — optisch/inhaltlich identisch zur Spalte. */
+
+/* Versteckte, aber per Tastatur fokussierbare Schalter */
+.rt-toggle-state {
+  position: absolute; width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  clip: rect(0 0 0 0); clip-path: inset(50%); overflow: hidden;
 }
 
-/* 1) Grund-Zustand: Kopf „schwebend", ohne Schatten — aber NICHT komplett
-   transparent: ein weicher Pergament-Schleier von oben hält Wortmarke + Menü
-   über dem Titelbild lesbar und läuft nach unten aus. Die Trennlinie Menü↔Inhalt
-   sitzt als dünne Akzentlinie an der Kopf-Unterkante (dieselbe Linie, auf der
-   der aktive Menüstrich liegt). */
+/* Eck-Knöpfe (Labels): immer sichtbar, fix in den Ecken */
+.rt-toolbar { display: contents; }
+.rt-toggle {
+  position: fixed;
+  top: var(--rt-hh-full);   /* konstanter Offset (= Inhalts-Offset), bewegt sich nie */
+  z-index: 7;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0.15rem;
+  color: var(--md-default-fg-color--light);
+  opacity: 0.5;
+  cursor: pointer;
+  transition: color 125ms, opacity 125ms;
+}
+.rt-toggle svg { width: 1.05rem; height: 1.05rem; fill: currentColor; }
+.rt-toggle:hover { color: var(--md-accent-fg-color); opacity: 1; }
+.rt-toggle--nav { left: 0.3rem; }
+.rt-toggle--toc { right: 0.3rem; }
+.rt-toggle--toc svg { transform: scaleX(-1); }   /* gespiegeltes Listen-Icon (rechts) */
+/* Tastatur-Fokus sichtbar am zugehörigen Label */
+#rt-nav-toggle:focus-visible ~ .rt-toggle--nav,
+#rt-toc-toggle:focus-visible ~ .rt-toggle--toc {
+  color: var(--md-accent-fg-color);
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+/* Titelbild-Seite: keine Knöpfe. hide:navigation -> kein Nav-Knopf,
+   hide:toc -> kein TOC-Knopf (Sidebar trägt dann [hidden]). */
+body:has(.rt-titelbild) .rt-toolbar { display: none; }
+body:has(.md-sidebar--primary[data-md-type="navigation"][hidden]) .rt-toggle--nav { display: none; }
+body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
+
+/* ── Breit: Spalte per Knopf ausblenden (Inhalt rückt nach) ──────────────────── */
+@media screen and (min-width: 60em) {            /* Nav ist hier Spalte */
+  html:has(#rt-nav-toggle:checked) .md-sidebar--primary:not([hidden]) { display: none; }
+}
+@media screen and (min-width: 76.25em) {         /* TOC ist hier Spalte */
+  html:has(#rt-toc-toggle:checked) .md-sidebar--secondary:not([hidden]) { display: none; }
+}
+
+/* (Sidebars werden in main.html ohne data-md-component="sidebar" gerendert, daher
+   fasst Materials Sidebar-JS sie nicht an — keine berechnete Inline-Höhe/-top, kein
+   Sprung am 960er-Breakpoint. Höhe = Inhalt, rein per CSS.) */
+
+/* ── Linke Liste: IMMER Desktop-Spalten-Rendering (nie Material-Drawer) ───────── */
+@media screen and (max-width: 76.234375em) {
+  /* Container/Nav im Fluss statt absolut/voll-hoch */
+  .md-sidebar--primary .md-sidebar__scrollwrap { position: relative; inset: auto; overflow: visible; }
+  .md-nav--primary,
+  .md-nav--primary .md-nav { position: static; height: auto; background-color: transparent; }
+  .md-nav--primary .md-nav__item { border-top: 0; }
+  /* Drawer-Kopf-Bar auf kompakten Desktop/Base-Titel zurücksetzen
+     (mobil: height:5.6rem; padding:3rem … -> die großen Lücken) */
+  .md-nav--primary .md-nav__title {
+    position: static;
+    height: auto;
+    line-height: 1.5;
+    padding: 0 0.6rem;
+    background-color: transparent;
+    box-shadow: none;
+    cursor: auto;
+    white-space: normal;
+  }
+  .md-nav--primary .md-nav__title .md-nav__icon { display: none; }
+  /* navigation.tabs (lifted): nur aktiver Top-Abschnitt, kein Top-Titel */
+  .md-nav--lifted > .md-nav__list > .md-nav__item { display: none; }
+  .md-nav--lifted > .md-nav__list > .md-nav__item--active { display: block; }
+  .md-nav--lifted > .md-nav__title { display: none; }
+  /* Unterpunkte als Accordion (wie Desktop), kein Slide-in-Drawer */
+  .md-nav__toggle ~ .md-nav {
+    display: grid;
+    grid-template-rows: minmax(0, 0fr);
+    opacity: 0;
+    visibility: collapse;
+    transform: none;
+    transition: grid-template-rows .25s cubic-bezier(.86,0,.07,1), opacity .25s, visibility 0ms .25s;
+  }
+  .md-nav__toggle:checked ~ .md-nav,
+  .md-nav__toggle.md-toggle--indeterminate ~ .md-nav {
+    grid-template-rows: minmax(0, 1fr);
+    opacity: 1;
+    visibility: visible;
+    transition: grid-template-rows .25s cubic-bezier(.86,0,.07,1), opacity .15s .1s, visibility 0ms;
+  }
+  .md-nav__toggle ~ .md-nav > .md-nav__list { overflow: hidden; }
+  .md-nav__item--nested .md-nav__toggle:checked ~ .md-nav__link .md-nav__icon::after,
+  .md-nav__item--nested .md-toggle--indeterminate ~ .md-nav__link .md-nav__icon::after {
+    transform: rotate(90deg);
+  }
+  /* integrierten „Inhaltsverzeichnis"-Eintrag im Nav ausblenden (eigenes TOC-Overlay) */
+  .md-nav--primary .md-nav__link[for="__toc"],
+  .md-nav--primary .md-nav__link[for="__toc"] ~ .md-nav { display: none; }
+}
+
+/* ── Nav als Spalte zwischen 60–76.25em (statt Material-Drawer) ──────────────── */
+@media screen and (min-width: 60em) and (max-width: 76.234375em) {
+  .md-sidebar--primary:not([hidden]) {
+    position: sticky;
+    top: var(--rt-header-h);
+    left: auto;
+    right: auto;
+    transform: none;
+    height: auto;
+    z-index: auto;
+    background: transparent;
+    box-shadow: none;
+  }
+  [dir=ltr] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner { margin-left: 1.2rem; }
+}
+
+/* Overlays liegen ABSOLUT im Content-Bereich -> Box-Höhe = Höhe des Parents
+   (= Content), nicht Viewport, nicht Eigeninhalt. Bezug: */
+.md-main__inner { position: relative; }
+
+/* ── Nav als Overlay unter 60em (über dem Text, Höhe = Content) ──────────────── */
+@media screen and (max-width: 59.984375em) {
+  .md-sidebar--primary:not([hidden]) { display: none; }
+  html:has(#rt-nav-toggle:checked) .md-sidebar--primary:not([hidden]) {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;             /* = Höhe des Parents (Content) */
+    transform: none;
+    overflow-y: auto;
+    z-index: 6;
+    background: var(--md-default-bg-color);
+    box-shadow: var(--md-shadow-z3);
+  }
+}
+
+/* ── TOC als Overlay unter 76.25em (spiegelbildlich, Höhe = Content) ─────────── */
+@media screen and (max-width: 76.234375em) {
+  .md-sidebar--secondary:not([hidden]) { display: none; }
+  html:has(#rt-toc-toggle:checked) .md-sidebar--secondary:not([hidden]) {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;             /* = Höhe des Parents (Content), spiegelbildlich */
+    overflow-y: auto;
+    z-index: 6;
+    background: var(--md-default-bg-color);
+    box-shadow: var(--md-shadow-z3);
+  }
+}
+
+/* Burger bleibt unangetastet, aber funktionslos: Drawer-Abdunklung neutralisieren */
+.md-overlay { display: none; }
+
+:root {
+  --rt-header-rule: color-mix(in oklab, var(--rt-accent) 22%, transparent);
+  --rt-header-solid: color-mix(in oklab, var(--rt-paper) 86%, transparent);
+  /* Breite der (zentrierten) Navbar = Logo + Tabs; für bündige linke Suchfeld-Kante */
+  --rt-navbar-w: 19.4rem;
+}
+
+/*
+ * Header-Minimierung beim Scrollen — eine Logik für ALLE Seiten, rein per CSS.
+ *
+ * Eine Scroll-Timeline treibt EINEN Fortschritt --rt-p (0→1) über die ersten
+ * Scroll-Pixel (Bereich = volle Headerhöhe). Alle Header-Maße werden daraus per
+ * calc() zwischen einem "voll"- und einem "min"-Wert interpoliert — die
+ * --rt-*-full/-min-Variablen sind die einzige Quelle, sonst keine Zahlen.
+ *   • Nur --rt-p braucht @property (sonst kein Interpolieren, Sprung bei 50 %);
+ *     from/to im Keyframe müssen beide gesetzt sein.
+ *   • Kein JS-Toggle: der koppelte früher über die Dokumenthöhe zurück und ließ
+ *     die Höhe in der Übergangszone oszillieren; eine Scroll-Timeline ist stetig.
+ *
+ * Der Header liegt fix über dem Inhalt (position: fixed) und ist damit aus dem
+ * Fluss — sein Schrumpfen ändert NICHTS am Layout. Der Inhalt bekommt einen
+ * KONSTANTEN oberen Offset (volle Headerhöhe) und scrollt dadurch sauber 1:1
+ * weg (er soll mit hochrutschen), ohne dass der sich ändernde Header daran
+ * zerrt. Identisch auf jeder Seite, kein Sonderfall.
+ */
+:root {
+  --rt-hh-full: 4.8rem;     --rt-hh-min: 2.4rem;
+  --rt-gap-full: 0.55rem;   --rt-gap-min: 0.3rem;
+  --rt-logo-full: 2.6rem;   --rt-logo-min: 1.2rem;
+  --rt-title-full: 1.55rem; --rt-title-min: 0.9rem;
+}
+@property --rt-p { syntax: "<number>"; inherits: true; initial-value: 0; }
+@keyframes rt-header-minimize { from { --rt-p: 0; } to { --rt-p: 1; } }
+
+body {
+  animation: rt-header-minimize linear both;
+  animation-timeline: scroll(root);
+  animation-range: 0 var(--rt-hh-full);
+  --rt-hh:       calc(var(--rt-hh-full)    + (var(--rt-hh-min)    - var(--rt-hh-full))    * var(--rt-p));
+  --rt-gap:      calc(var(--rt-gap-full)   + (var(--rt-gap-min)   - var(--rt-gap-full))   * var(--rt-p));
+  --rt-logo-h:   calc(var(--rt-logo-full)  + (var(--rt-logo-min)  - var(--rt-logo-full))  * var(--rt-p));
+  --rt-title-fs: calc(var(--rt-title-full) + (var(--rt-title-min) - var(--rt-title-full)) * var(--rt-p));
+  --rt-solid:    var(--rt-p);
+  --rt-header-h: var(--rt-hh);
+}
+
+.md-container {
+  padding-top: var(--rt-hh-full);
+}
+
 .md-header {
+  position: fixed;
+  left: 0;
+  right: 0;
   box-shadow: none !important;
   background-color: transparent;
   background-image: linear-gradient(to bottom,
@@ -252,17 +391,6 @@ body:has(.md-sidebar--primary[data-md-type="navigation"][hidden]) .md-header__bu
     color-mix(in oklab, var(--rt-paper) 30%, transparent) 100%);
   transition: background-color 0.25s ease, backdrop-filter 0.25s ease;
 }
-/* Dunkles Schema, GRUND-Zustand (oben/„schwebend"): Material setzt im Dunkeln
-   `data-md-color-primary="black"` und färbt darüber den Header per
-   `[data-md-color-primary=black] .md-header` VOLL DECKEND (Spezifität 0,2,0) —
-   das schlug unsere `.md-header{background-color:transparent}` (0,1,0), der große
-   Header war komplett undurchsichtig und der Schleier-Verlauf lag wirkungslos auf
-   der deckenden Fläche. Daher hier den Hintergrund wieder transparent setzen
-   (gleiche Spezifität 0,2,0, aber später geladen → gewinnt) und nur den Verlaufs-
-   Schleier zeigen — etwas geringere Deckkraft als hell (52/30/12 statt 78/52/30),
-   weil ein dunkler Schleier über dem hellen Titelbild stärker dämpft. Der Scroll-
-   Zustand (`[data-rt-scrolled] .md-header`, deckend + Blur) steht später im
-   Quelltext und gewinnt dort weiterhin — bleibt also unberührt. */
 [data-md-color-scheme="slate"] .md-header {
   background-color: transparent;
   background-image: linear-gradient(to bottom,
@@ -270,11 +398,6 @@ body:has(.md-sidebar--primary[data-md-type="navigation"][hidden]) .md-header__bu
     color-mix(in oklab, var(--rt-paper) 30%, transparent) 60%,
     color-mix(in oklab, var(--rt-paper) 12%, transparent) 100%);
 }
-/* Trennlinie Menü↔Inhalt als Pseudo an der Kopf-Unterkante (bottom: 0).
-   Liegt damit exakt auf derselben Höhe wie der aktive Menüstrich (der
-   ebenfalls am unteren Rand sitzt) und wird nicht vom Inhalt überdeckt.
-   `::before` → wird hinter den Tabs gezeichnet, der aktive Strich liegt
-   sichtbar darüber. */
 .md-header::before {
   content: "";
   position: absolute;
@@ -286,127 +409,134 @@ body:has(.md-sidebar--primary[data-md-type="navigation"][hidden]) .md-header__bu
   pointer-events: none;
 }
 
-/* 2) Scroll-Zustand: Kopf wird deckend (Pergament + Blur), kein Schatten */
-[data-rt-scrolled] .md-header {
-  box-shadow: none !important;
-  background-image: none;
+/* deckendes Pergament + Blur, beim Scrollen via --rt-solid (0→1) eingeblendet;
+   liegt hinter dem Header-Inhalt (z-index: -1) und über dem Schleier-Gradient. */
+.md-header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--rt-solid);
   background-color: var(--rt-header-solid);
   -webkit-backdrop-filter: saturate(1.15) blur(8px);
   backdrop-filter: saturate(1.15) blur(8px);
 }
 
-/* 3) Layout: oben (normal) ist die Navigation eine zentrierte Leiste UNTER
-   der Kopfzeile; beim Scrollen (md-header--shadow) minimiert sie sich nach
-   oben in die Zeile, zwischen Wortmarke und Suche. Umsetzung via
-   flex-wrap + order auf `.md-header__inner`. */
+.md-header,
 .md-header__inner {
-  flex-wrap: wrap;
-  align-items: center;
+  height: var(--rt-hh);
 }
-/* Wortmarke „Ratatöskr" links sichtbar halten: Material positioniert die
-   Topic absolut (Breite 0) — erste Topic relativ machen gibt dem Titel
-   wieder Eigenbreite, sonst verschwindet die Wortmarke. */
+.md-header__inner {
+  position: relative;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  padding-bottom: var(--rt-gap);
+}
+
+.md-header .md-header__button.md-logo,
 .md-header__title {
-  flex-grow: 1; /* normal: füllt Zeile 1, damit die Tabs umbrechen */
-  /* Wortmarke passt sich dem Kopf-Zustand an: im großen (zweizeiligen) Kopf
-     größer, beim Minimieren wieder kleiner (vgl. Logo unten). */
-  font-size: 1.15rem;
-  transition: font-size 0.25s ease;
+  align-self: center;
+  margin-bottom: calc(-1 * var(--rt-gap));
+}
+.md-header .md-header__button.md-logo {
+  order: 1;
+  display: flex;
+  align-items: center;
+  margin: 0 0 calc(-1 * var(--rt-gap));
+}
+.md-header .md-logo svg {
+  height: var(--rt-logo-h);
+  width: auto;
+}
+.md-header__title {
+  order: 2;
+  display: flex;
+  align-items: center;
+  margin: 0 auto calc(-1 * var(--rt-gap)) 0;
+  font-size: var(--rt-title-fs);
+  line-height: 1;
+}
+.md-header .md-header__title {
+  margin-left: 0.3rem;
 }
 .md-header__title .md-header__topic:first-child {
   position: relative;
 }
-/* Logo (Eichhörnchen) skaliert mit dem Kopf-Zustand wie die Wortmarke: groß im
-   maximierten Kopf, kompakt beim Scrollen. (Material setzt sonst eine feste
-   1.2rem-Größe.) */
-.md-header .md-logo svg {
-  height: 1.6rem;
-  width: auto;
-  transition: height 0.25s ease;
+.md-header__title .md-header__ellipsis {
+  display: flex;
+  align-items: center;
 }
 
-/* Logo + Wortmarke MITTIG über die VOLLE Kopfhöhe ──────────────────────────
-   Im großen, zweizeiligen Kopf (Desktop, nicht gescrollt) soll die Marke
-   (Logo + „Ratatöskr") nicht in der oberen Zeile sitzen, sondern links über
-   beide Zeilen hinweg vertikal zentriert die volle Höhe einnehmen. Dazu
-   verlassen Logo + Titel den umbrechenden Zeilenfluss und werden absolut links
-   verankert (top:0;bottom:0 → volle Höhe, align-items:center → mittig). Die
-   übrigen Bedienelemente (Schema, Suche) verlieren dadurch den Titel als
-   Platzhalter und werden über `margin-left:auto` wieder nach rechts geschoben;
-   die Tabs (eigene 100%-Zeile) bleiben unberührt mittig und ihr Strich auf der
-   Trennlinie. Nur ab dem Desktop-Breakpoint (kein Hamburger, der links mit der
-   Marke kollidieren würde); kompakt + mobil unverändert. */
-@media screen and (min-width: 76.25em) {
-  html:not([data-rt-scrolled]) .md-header__inner {
-    position: relative;
-  }
-  html:not([data-rt-scrolled]) .md-header .md-logo {
-    position: absolute;
-    left: 0.4rem;
-    top: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    margin: 0;
-    z-index: 1;
-  }
-  html:not([data-rt-scrolled]) .md-header .md-logo svg {
-    height: 2.6rem;
-  }
-  html:not([data-rt-scrolled]) .md-header__title {
-    position: absolute;
-    left: 4rem;
-    top: 0;
-    bottom: 0;
-    height: auto; /* Materials feste 2.4rem-Höhe lösen, sonst klebt der Titel oben */
-    display: flex;
-    align-items: center;
-    margin: 0;
-    z-index: 1;
-  }
-  /* Den eigentlichen Wortmarken-Text mittig in die volle Höhe rücken: Material
-     hält die Topic sonst oben in der (jetzt vollhohen) Ellipsis-Box. */
-  html:not([data-rt-scrolled]) .md-header__title .md-header__ellipsis {
-    display: flex;
-    align-items: center;
-  }
-  /* Bedienelemente rechtsbündig halten (Titel als Flex-Platzhalter entfällt) */
-  html:not([data-rt-scrolled]) .md-header__inner > .md-header__option {
-    margin-left: auto;
-  }
-}
-/* Farb-Schema-Umschalter (Auto/Hell/Dunkel) rechts in Zeile 1, vor der Suche.
-   Material rendert ihn als `<form class="md-header__option">` (direktes Kind von
-   .md-header__inner; die Toggle-Labels stecken DARIN, daher nicht die Labels
-   ordnen). Ohne order (→ 0) säße er sonst in der order-0-Gruppe links. */
-.md-header__inner > .md-header__option {
-  order: 2;
-  flex: 0 0 auto;
-}
-/* Suche + Repo-Link rechts in Zeile 1 */
-.md-header__inner > .md-search {
-  order: 3;
+.md-header__inner > .md-header__button[for="__search"] {
+  order: 6;
 }
 .md-header__inner > .md-header__source {
-  order: 4;
+  order: 7;
 }
-/* Tabs normal: eigene volle Zeile unter dem Kopf (order zuletzt → Umbruch),
-   am unteren Rand ausgerichtet, damit der aktive Strich auf der Trennlinie
-   liegt; kein Scrollen im Nav-Feld (overflow visible). */
-/* Tabs füllen in BEIDEN Zuständen die volle Höhe ihres Zeilenabschnitts
-   (align-self/stretch). Dadurch sitzt die Unterkante des Tab-Links immer auf
-   der Kopf-Unterkante = auf der Trennlinie, in maximiert wie minimiert. Der
-   Text wird im Link selbst vertikal zentriert. */
+.md-header__inner > .md-header__option {
+  order: 8;
+}
+.md-header__inner > .md-header__button[for="__search"],
+.md-header__inner > .md-header__option {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.md-header__inner > .md-header__option > label.md-header__button {
+  align-items: flex-end;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+/* Eingebettetes Suchfeld nur ab 60em; darunter Materials nativer Overlay
+   (sonst im schmalen Modus nicht nutzbar). Linke Kante bündig mit der Navbar. */
+@media screen and (min-width: 60em) {
+  .md-header__inner > .md-search {
+    position: absolute;
+    left: calc(50% - var(--rt-navbar-w) / 2);
+    bottom: 0;
+    z-index: 4;
+    width: min(32rem, 50vw);
+    margin: 0;
+    padding: 0;
+  }
+  .md-header__inner > .md-search .md-search__inner {
+    width: 100%;
+    float: none;
+  }
+  [data-md-toggle="search"]:not(:checked) ~ .md-header .md-search {
+    display: none;
+  }
+  .md-header__inner > .md-search .md-search__overlay {
+    display: none;
+  }
+}
+[data-md-toggle="search"]:checked ~ .md-header .md-header__inner > .md-tabs {
+  display: none;
+}
+/* Schema-Umschalter bleibt beim Öffnen der Suche sichtbar (Material blendet
+   .md-header__option sonst aus — soll von der Suche unabhängig bleiben). */
+[data-md-toggle="search"]:checked ~ .md-header .md-header__inner > .md-header__option {
+  max-width: 100%;
+  opacity: 1;
+}
+
 .md-header__inner > .md-tabs {
-  order: 9;
-  flex: 0 0 100%;
-  width: 100%;
-  min-width: 0;
-  align-self: stretch;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  top: auto;
+  transform: translateX(-50%);
+  width: auto;
+  height: var(--rt-hh);
   margin: 0;
   padding: 0;
   display: flex;
   align-items: stretch;
+  pointer-events: none;
   background: transparent !important;
   -webkit-backdrop-filter: none !important;
   backdrop-filter: none !important;
@@ -417,72 +547,44 @@ body:has(.md-sidebar--primary[data-md-type="navigation"][hidden]) .md-header__bu
 .md-header__inner > .md-tabs > .md-grid {
   margin: 0;
   max-width: none;
-  width: 100%;
+  width: auto;
   display: flex;
   align-items: stretch;
   overflow: visible;
 }
 .md-header__inner > .md-tabs .md-tabs__list {
   display: flex;
-  justify-content: center; /* mittig zwischen Wortmarke und Suche */
   align-items: stretch;
-  width: 100%;
-  height: auto;
+  height: 100%;
   margin: 0;
   overflow: visible;
 }
 .md-header__inner > .md-tabs .md-tabs__item {
   display: flex;
   align-items: stretch;
+  height: 100%;
 }
-
-/* Minimiert (gescrollt): Tabs wandern in Zeile 1 zwischen Wortmarke und Suche;
-   Logo + Wortmarke schrumpfen auf die kompakte Größe der einzeiligen Leiste. */
-[data-rt-scrolled] .md-header .md-header__title {
-  flex-grow: 0;
-  font-size: 0.9rem;
-}
-[data-rt-scrolled] .md-header .md-logo svg {
-  height: 1.2rem;
-}
-[data-rt-scrolled] .md-header .md-header__inner > .md-tabs {
-  order: 1; /* zwischen Titel (0) und Suche (3) */
-  flex: 1 1 auto;
-  width: auto;
-}
-
-/* Kompakte Tab-Links; Text vertikal zentriert, Strich an der Unterkante.
-   Beim Minimieren etwas kleiner. */
 .md-tabs__link {
   position: relative;
+  pointer-events: auto;
   display: flex;
-  /* Text oben im Tab-Feld ausrichten (statt mittig): im großen, zweizeiligen
-     Kopf rückt die Beschriftung dadurch weiter in die (vertikale) Mitte des
-     Kopfes nach oben — ohne größer zu werden — und schwebt sichtbar über der
-     Trennlinie. Der Strich (::after, bottom:0) bleibt unverändert unten auf der
-     Trennlinie Kopf↔Inhalt liegen. Kompakt (gescrollt) wieder mittig, s. u. */
-  align-items: flex-start;
+  align-items: flex-end;
   height: 100%;
   margin: 0;
-  padding: 0.2rem 0.15rem 0;
-  font-size: 0.7rem;
-  line-height: 1;
-  transition: color 0.2s ease, opacity 0.25s, font-size 0.25s ease,
-    padding 0.25s ease;
+  padding: 0 0.45rem var(--rt-gap);
+  font-size: 0.72rem;
+  line-height: 1.1;
+  transition: color 0.2s ease, opacity 0.25s ease, padding 0.25s ease;
 }
-[data-rt-scrolled] .md-header .md-tabs__link {
-  align-items: center; /* kompakte einzeilige Leiste: Text wieder mittig */
-  padding: 0.3rem 0.15rem;
-  font-size: 0.64rem;
+.md-tabs__item--active .md-tabs__link {
+  color: var(--rt-accent);
+  opacity: 1;
 }
-
-/* 4) Aktiver/gehoverter Strich = Teil der Trennlinie an der Kopf-Unterkante.
-   Normal: so breit wie das ganze Element. Minimiert: kurzer Strich (≈20px). */
 .md-tabs__link::after {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: 0; /* exakt auf der Trennlinie (Kopf-Unterkante) */
+  bottom: 0;
   width: 0;
   height: 2px;
   background-color: var(--rt-accent);
@@ -492,22 +594,60 @@ body:has(.md-sidebar--primary[data-md-type="navigation"][hidden]) .md-header__bu
 .md-tabs__item--active .md-tabs__link::after,
 .md-tabs__link:hover::after,
 .md-tabs__link:focus::after {
-  width: 100%; /* normal: volle Elementbreite (= Trennlinie) */
-}
-[data-rt-scrolled] .md-header .md-tabs__item--active .md-tabs__link::after,
-[data-rt-scrolled] .md-header .md-tabs__link:hover::after,
-[data-rt-scrolled] .md-header .md-tabs__link:focus::after {
-  width: 1.25rem; /* minimiert: kurzer Strich */
-}
-.md-tabs__item--active .md-tabs__link {
-  color: var(--rt-accent);
-  opacity: 1;
+  width: 100%;
 }
 
-/* 5) Dynamischen Seitentitel im Kopf nicht anzeigen.
-   Material blendet beim Scrollen die aktuelle Überschrift in den Kopf ein
-   (zweite `.md-header__topic`). Das wollen wir nicht — nur die Wortmarke
-   (erste Topic) bleibt, ohne Swap beim Scrollen. */
+/* ── Eng werdender Header: nach Wichtigkeit ausblenden; die Tabs (wichtigstes
+   Element) bleiben am längsten und verschwinden nicht, sondern werden zum
+   eigenen Hamburger (KEIN Material-Drawer). Rein CSS über #__rtmenu. ──────── */
+.rt-menu-state {
+  position: absolute; width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  clip: rect(0 0 0 0); clip-path: inset(50%); overflow: hidden;
+}
+.md-header__inner > .rt-menu-btn { display: none; }
+.rt-menu { display: none; }
+
+/* 1) Zuerst weicht die Wortmarke; Suche/Schema rechts per auto-Margin gehalten. */
+@media screen and (max-width: 60em) {
+  .md-header__title { display: none; }
+  .md-header__inner > .md-header__button[for="__search"] { margin-left: auto; }
+}
+
+/* 2) Zu eng für die Tab-Leiste → Hamburger mit vertikaler Top-Level-Liste. */
+@media screen and (max-width: 45em) {
+  .md-header__inner > .md-tabs { display: none; }
+  .md-header__inner > .rt-menu-btn {
+    order: 2;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+  #__rtmenu:checked ~ .rt-menu {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 13rem;
+    z-index: 6;
+    background-color: var(--rt-header-solid);
+    -webkit-backdrop-filter: saturate(1.15) blur(8px);
+    backdrop-filter: saturate(1.15) blur(8px);
+    border-bottom: 2px solid var(--rt-header-rule);
+  }
+  .rt-menu .md-tabs__list,
+  .rt-menu .md-tabs__item { display: block; height: auto; }
+  .rt-menu .md-tabs__link {
+    height: auto;
+    align-items: center;
+    padding: 0.65rem 1.25rem;
+    font-size: 0.9rem;
+  }
+  .rt-menu .md-tabs__link::after { display: none; }
+  .rt-menu .md-tabs__item--active .md-tabs__link { color: var(--rt-accent); }
+}
+
 .md-header__topic + .md-header__topic {
   display: none;
 }
@@ -518,47 +658,12 @@ body:has(.md-sidebar--primary[data-md-type="navigation"][hidden]) .md-header__bu
   z-index: 0;
 }
 
-/* 6) Suche als aufklappbares Icon (Desktop), nicht dauerhaft als Eingabefeld.
-   Eingeklappt zeigt der Kopf nur die Lupe; ein Klick darauf (Toggle
-   `#__search`) klappt das Suchfeld auf — Material übernimmt dann seine
-   Standard-Aufklapp-Breite. */
-@media screen and (min-width: 60em) {
-  /* eingeklappt: nur Lupe sichtbar */
-  .md-search__inner {
-    width: 1.8rem;
-  }
-  /* eingeklappt: Kasten + Eingabefeld unsichtbar, Lupe bleibt klickbar —
-     kein grauer/eckiger Hover-Hintergrund */
-  [data-md-toggle="search"]:not(:checked) ~ .md-header .md-search__form,
-  [data-md-toggle="search"]:not(:checked) ~ .md-header .md-search__form:hover {
-    background-color: transparent;
-    box-shadow: none;
-  }
-  [data-md-toggle="search"]:not(:checked) ~ .md-header .md-search__input {
-    opacity: 0;
-  }
-  /* Mikro-Animation: die Lupe wächst beim Hover (statt grauem Kasten) */
-  .md-search__icon[for="__search"] {
-    transition: transform 0.2s ease, color 0.2s ease;
-    transform-origin: center;
-  }
-  [data-md-toggle="search"]:not(:checked) ~ .md-header
-    .md-search__form:hover .md-search__icon[for="__search"] {
-    transform: scale(1.3);
-    color: var(--rt-accent);
-  }
-  /* aufgeklappt: Material-Standardbreite (23.4rem) greift dank höherer
-     Spezifität automatisch — hier nichts weiter nötig. */
-}
-
-/* Footer: Rechtliches (Impressum · Datenschutz) — rechts in der Meta-Zeile,
-   Copyright steht links (space-between des .md-footer-meta__inner) ─────── */
 .md-footer-legal {
   display: flex;
   align-items: center;
-  /* spiegelt das horizontale Margin des Copyrights (margin: auto .6rem),
-     damit die Rechtslinks nicht am rechten Rand kleben */
-  margin: 0 0.6rem;
+  font-size: 0.64rem;
+  margin: auto 0.6rem;
+  padding: 0.4rem 0;
 }
 .md-footer-legal a {
   color: inherit;
@@ -572,12 +677,10 @@ body:has(.md-sidebar--primary[data-md-type="navigation"][hidden]) .md-header__bu
   opacity: 0.6;
 }
 
-/* Startseiten-Tab: Home-Icon statt Titeltext ───────────────────────────
-   (Override overrides/partials/tabs-item.html). Label bleibt fuer
-   Screenreader erhalten, ist aber visuell versteckt. */
 .md-tabs__home {
   display: inline-flex;
   align-items: center;
+  color: #6d28d9;
 }
 .md-tabs__home svg {
   height: 1.1rem;

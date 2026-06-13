@@ -1,32 +1,8 @@
-/* ====================================================================
-   Ratatöskr — Startseite über Markdown-Admonitions/Cards + Template-Titelbild.
-     Titelbild = Frontmatter `titelbild:` -> .rt-titelbild  (Template, full-bleed)
-     Big       = Callout  > [!big] Titel  -> .admonition.big (großer Titel-Text)
-     Parallax  = Callout-Klasse `.parallax` -> .admonition.parallax (Bild scrollt langsamer)
-     Teaser    = Material "grid cards"
-   Tokens (--rt-*) kommen aus extra.css. Header/Menue von properdocs/Material.
-   ==================================================================== */
-
-/* ── Titelbild (aus Frontmatter `titelbild:`, gerendert im hero-Block von
-   overrides/main.html) ───────────────────────────────────────────────────
-   Full-bleed Bild an der Dokument-Oberkante, HINTER dem transparenten Header.
-   `position: absolute; top: 0` verankert es am Seitenanfang (body ist
-   `position: relative`, .md-container/.md-main sind statisch → Bezug ist das
-   Dokument, nicht der Header) — KEINE magische Header-Offset-Rechnung mehr.
-   Weil absolut (nicht fixed), scrollt es mit der Seite weg. z-index:-1 legt es
-   hinter den Inhaltsfluss (der Titel `!!! big` liegt darüber), aber über die
-   Paper-Hintergrundfarbe des body. */
 .rt-titelbild {
   position: absolute; top: 0; left: 0; z-index: -1;
   width: 100vw; height: clamp(420px, 78vh, 760px);
   overflow: hidden; pointer-events: none;
 }
-/* Parallax: Das Bild scrollt mit der Seite weg (die .rt-titelbild-Box ist
-   absolut verankert), bewegt sich dabei aber LANGSAMER als der Inhalt — als
-   scroll-driven animation (kein fixierter Hintergrund, kein JS). Das Bild ist
-   124% hoch und unten verankert; die 24% Reserve oben bleiben beim Mitscrollen
-   (translateY nach unten) im Ausschnitt, daher entsteht kein Spalt. Browser
-   ohne Scroll-Timeline ignorieren die Animation → Bild scrollt einfach 1:1. */
 .rt-titelbild img {
   position: absolute; left: 0; right: 0; bottom: 0; top: auto;
   width: 100%; height: 124%; object-fit: cover; display: block;
@@ -39,9 +15,6 @@
 @media (prefers-reduced-motion: reduce) {
   .rt-titelbild img { animation: none; }
 }
-/* Schleier: leichte Tönung dort, wo der Titel sitzt (Lesbarkeit), und nach
-   unten in die Paper-Farbe auslaufend, damit das Bild sauber in die Seite
-   übergeht. */
 .rt-titelbild::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   background:
@@ -51,65 +24,29 @@
     linear-gradient(to bottom, transparent 55%, var(--rt-paper) 100%);
 }
 
-/* Sprung-Fix (Titelbild-Seiten): Der sticky Header liegt im Inhaltsfluss und
-   reserviert seine Höhe. Beim Minimieren (2 → 1 Zeile) schrumpft diese Höhe um
-   ~48px und schiebt den Inhalt schlagartig nach oben — das absolut verankerte
-   Titelbild bleibt stehen → sichtbarer Sprung (gemessen: titleDoc 241→193 bei
-   Schwelle, Titelbild unverändert). Lösung: NUR auf Seiten mit Titelbild den
-   Header `position: fixed` setzen — er nimmt dann KEINE (wechselnde) Höhe im
-   Fluss ein, der Inhalt startet konstant an der Dokument-Oberkante und bleibt
-   beim Minimieren stehen, deckungsgleich mit dem Titelbild → fließend. Andere
-   Seiten behalten den sticky-Header unverändert. */
-body:has(.rt-titelbild) .md-header { position: fixed; }
-
-/* ── Big (aus `> [!big] Titel`) — großer, zentrierter Titel-Textblock ──
-   Liegt (sofern vorhanden) über dem Titelbild; min-height ≈ Titelbild-Höhe,
-   damit der Titel im sichtbaren Bildband zentriert. Ohne Titelbild einfach ein
-   großer Titel auf Paper-Grund. */
 .md-typeset .admonition.big {
-  /* Container für die Titel-Schrift: cqi-Einheiten unten beziehen sich auf die
-     Inhaltsbreite, also genau auf den Platz, der dem Titel zur Verfügung steht. */
   container-type: inline-size;
   border: 0; border-radius: 0; box-shadow: none; background: none; font-size: 1rem;
-  /* Grund: Höhe folgt dem Inhalt (nur moderates Polster). Die große Hero-Höhe
-     (78vh, Titel mittig über dem Bild) gibt es NUR auf Titelbild-Seiten — siehe
-     `body:has(.rt-titelbild)`-Regel unten. So bläht der Titel z. B. auf „Über
-     uns" die Seite nicht mehr absurd auf. */
   padding: clamp(16px, 2vh, 28px) clamp(16px, 4vw, 40px);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   text-align: center; gap: 22px;
 }
-/* Nur Titelbild-Seiten (Startseite): voller Hero — Titel mittig im Bildband. */
 body:has(.rt-titelbild) .md-typeset .admonition.big {
   min-height: clamp(420px, 78vh, 760px);
   padding-block: clamp(48px, 8vh, 110px) clamp(24px, 4vh, 48px);
 }
 .md-typeset .admonition.big > * { max-width: 760px; margin: 0; }
-/* Titel gross — Material-Admonition-Chrome (Icon, Rahmen, Tönung) entfernen.
-   Die EXAKTE Schriftgröße (Text füllt die Eltern-Box voll aus, unverzerrt)
-   setzt das kleine Fit-Skript in overrides/main.html — CSS kann Textbreite nicht
-   messen. Der cqi-Wert hier ist nur der Fallback (ohne JS / kurz vor dem ersten
-   Fit) und bewusst konservativ, damit nichts überläuft. Einzeilig fixiert
-   (white-space: nowrap). Heller Halo, damit der Titel über dem Bild trägt. */
 .md-typeset .admonition.big > .admonition-title {
   margin: 0; padding: 0; background: none; border: 0; font-weight: 400;
   font-family: var(--rt-display);
-  font-size: min(160px, 12cqi); line-height: 0.9;   /* Fallback; JS fittet exakt */
+  font-size: min(178px, 16cqi); line-height: 0.9;
   letter-spacing: 0.04em; text-transform: uppercase; color: var(--rt-ink);
-  /* Obergrenze der Titelbreite — als FESTE px, NICHT rem: Material skaliert die
-     Wurzel-Schrift auf großen Schirmen stufenweise hoch (125→150 %), wodurch
-     rem-Maße (auch die Seitenbreite) mitwachsen und der Fit den Titel immer
-     größer zog. Das JS liest diese max-width und fittet nur bis dahin; auf
-     schmaleren Schirmen füllt der Titel die Box. Tunebar via --rt-bigtitle-max. */
   max-width: var(--rt-bigtitle-max, 1100px); white-space: nowrap;
   text-shadow: 0 1px 2px color-mix(in oklab, var(--rt-paper) 70%, transparent),
                0 0 14px color-mix(in oklab, var(--rt-paper) 60%, transparent);
 }
-/* Mehrzeiliger Titel (manuelle Zeilenumbrüche via <br>): füllt über die
-   breiteste Zeile (das Fit-Skript misst sie). Etwas mehr Zeilenhöhe; der
-   cqi-Wert ist auch hier nur der JS-lose Fallback. */
 .md-typeset .admonition.big > .admonition-title:has(br) {
-  font-size: min(40px, 2.4cqi); line-height: 1.15;
+  font-size: min(44px, 4cqi); line-height: 1.15;
 }
 .md-typeset .admonition.big > .admonition-title::before { display: none; }
 .md-typeset .admonition.big > p {
@@ -120,18 +57,11 @@ body:has(.rt-titelbild) .md-typeset .admonition.big {
 }
 .md-typeset .admonition.big .md-button { margin: 8px 6px 0; }
 
-/* ── Parallax-Klasse für beliebige Callouts (`> [!typ|.parallax]`) ─────────
-   Macht ein Bild IM Callout zur Hintergrund-Ebene, die beim Durchscrollen
-   langsamer läuft (scroll-driven, pro Element via `animation-timeline: view()`
-   — kein JS, keine fixe Höhe nötig). Das Bild bitte mit `{.off-glb}` einbinden
-   (sonst legt glightbox eine Lupe darüber). Browser ohne Scroll-Timeline zeigen
-   das Bild einfach statisch. */
 .md-typeset .admonition.parallax {
   position: relative; overflow: hidden; isolation: isolate;
   border: 0; box-shadow: none; background: transparent;
 }
 .md-typeset .admonition.parallax > .admonition-title { background: transparent; }
-/* das Bild-Paragraph wird zur absoluten Hintergrund-Ebene */
 .md-typeset .admonition.parallax > p:has(img) {
   position: absolute; inset: 0; z-index: 0; margin: 0; max-width: none;
   padding: 0; pointer-events: none;
@@ -145,20 +75,11 @@ body:has(.rt-titelbild) .md-typeset .admonition.big {
   animation-range: cover 0% cover 100%;
   will-change: transform;
 }
-/* aller übrige Inhalt (Titelzeile, Text, Buttons) über das Bild */
 .md-typeset .admonition.parallax > :not(p:has(img)) { position: relative; z-index: 1; }
 @media (prefers-reduced-motion: reduce) {
   .md-typeset .admonition.parallax > p:has(img) img { animation: none; transform: translateY(-11%); }
 }
 
-/* ── Teaser-Kacheln (eigenes HTML-Konstrukt, siehe docs/index.md) ───────────
-   Jede Kachel ist EIN `<a class="rt-teaser">` → nativ klickbar, kein
-   Pseudo-Trick, kein Markdown-Konstrukt. Aufbau je Kachel:
-     <a.rt-teaser> <img.rt-teaser__img> <span.rt-teaser__cap>
-                     <span.rt-teaser__title> <span.rt-teaser__text>
-   Bild + Schleier liegen via `isolation: isolate` auf negativer z-Ebene in der
-   Kachel; die Beschriftung (`__cap`) läuft im normalen Fluss mittig darüber.
-   Schleier: im Ruhezustand dezent (Bild bleibt klar), beim Hover kräftig. */
 .md-typeset .rt-teasers {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
@@ -172,23 +93,29 @@ body:has(.rt-titelbild) .md-typeset .admonition.big {
   text-align: center; text-decoration: none;
   background: color-mix(in oklab, var(--rt-ink) 8%, var(--rt-paper));
   transition: transform .25s ease, box-shadow .25s ease;
+  view-timeline-name: --rt-teaser-view;
+  view-timeline-axis: block;
 }
 .md-typeset .rt-teaser:hover,
 .md-typeset .rt-teaser:focus-visible {
   transform: translateY(-3px);
   box-shadow: 0 10px 26px color-mix(in oklab, var(--rt-ink) 22%, transparent);
 }
-/* Bild = Hintergrund-Ebene */
 .md-typeset .rt-teaser__img {
-  position: absolute; inset: 0; z-index: -2;
-  width: 100%; height: 100%; object-fit: cover; display: block;
-  transition: transform .4s ease;
+  position: absolute; left: 0; right: 0; top: -15%; z-index: -2;
+  width: 100%; height: 130%; object-fit: cover; display: block;
+  animation: rt-teaser-parallax linear both;
+  animation-timeline: --rt-teaser-view;
+  animation-range: entry 0% entry 100%;
+  transition: scale .4s ease;
+  will-change: transform;
 }
+@keyframes rt-teaser-parallax { from { transform: translateY(9%); } to { transform: translateY(-9%); } }
 .md-typeset .rt-teaser:hover .rt-teaser__img,
-.md-typeset .rt-teaser:focus-visible .rt-teaser__img { transform: scale(1.045); }
-/* Schleier — radial zur Mitte (dort sitzt der Text). Ruhezustand: nur dezent
-   (opacity .18), damit das Bild NICHT ausgegraut wirkt. Beim Hover: voll
-   sichtbar für Lesbarkeit. */
+.md-typeset .rt-teaser:focus-visible .rt-teaser__img { scale: 1.05; }
+@media (prefers-reduced-motion: reduce) {
+  .md-typeset .rt-teaser__img { animation: none; transform: none; }
+}
 .md-typeset .rt-teaser::after {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: radial-gradient(ellipse 100% 78% at 50% 50%,
@@ -199,7 +126,6 @@ body:has(.rt-titelbild) .md-typeset .admonition.big {
 }
 .md-typeset .rt-teaser:hover::after,
 .md-typeset .rt-teaser:focus-visible::after { opacity: 1; }
-/* Beschriftung mittig über dem Bild */
 .md-typeset .rt-teaser__cap {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
   padding: 0 clamp(16px, 7%, 30px);
