@@ -178,8 +178,9 @@ body[data-md-color-scheme] .md-content__button {
 /* Eck-Knöpfe (Labels): immer sichtbar, fix in den Ecken */
 .rt-toolbar { display: contents; }
 .rt-toggle {
-  position: fixed;
-  top: var(--rt-hh-full);   /* konstanter Offset (= Inhalts-Offset), bewegt sich nie */
+  position: absolute;
+  top: var(--rt-hh-full);   /* an Content-Oberkante verankert: scrollt mit dem Inhalt
+                               nach oben und verschwindet unter dem (fixen) Header */
   z-index: 7;
   display: inline-flex;
   align-items: center;
@@ -225,28 +226,64 @@ body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
 
 /* ── Linke Liste: IMMER Desktop-Spalten-Rendering (nie Material-Drawer) ───────── */
 @media screen and (max-width: 76.234375em) {
-  /* Container/Nav im Fluss statt absolut/voll-hoch */
-  .md-sidebar--primary .md-sidebar__scrollwrap { position: relative; inset: auto; overflow: visible; }
+  /* Container/Nav im Fluss statt absolut/voll-hoch. Rand um die Liste wie die
+     Desktop-Spalte (scrollwrap-Margin .2rem; Material setzt darunter margin:0 und
+     macht so das breitenabhängige inner-padding größer → Abstände driften). */
+  .md-sidebar--primary .md-sidebar__scrollwrap { position: relative; inset: auto; overflow: visible; margin: 0 0.2rem; }
+  [dir=ltr] .md-sidebar--primary .md-sidebar__inner { padding-right: 0.2rem; }
+  [dir=rtl] .md-sidebar--primary .md-sidebar__inner { padding-left: 0.2rem; }
   .md-nav--primary,
   .md-nav--primary .md-nav { position: static; height: auto; background-color: transparent; }
   .md-nav--primary .md-nav__item { border-top: 0; }
-  /* Drawer-Kopf-Bar auf kompakten Desktop/Base-Titel zurücksetzen
-     (mobil: height:5.6rem; padding:3rem … -> die großen Lücken) */
-  .md-nav--primary .md-nav__title {
+  .md-nav--primary .md-nav__title ~ .md-nav__list { box-shadow: none; }   /* Drawer-Trennlinie weg */
+  /* Material rendert die linke Liste hier als mobilen Drawer (größere Schrift,
+     Touch-Padding, Pane-Titel, kein Einzug). Auf die Desktop-Spalte zurückführen:
+     Typografie/Abstände/Einzug = die sonst auf >=76.25em gegateten Werte. */
+  .md-nav--primary .md-nav__item { font-size: 0.7rem; line-height: 1.3; }
+  .md-nav--primary .md-nav__link { margin-top: 0.625em; padding: 0; }
+  [dir=ltr] .md-nav--primary .md-nav__item > .md-nav__link { margin-right: 0.4rem; }
+  [dir=ltr] .md-nav--primary .md-nav__list { padding-left: 0.6rem; }
+  .md-nav--primary .md-nav__list { padding-bottom: 0.4rem; }
+  [dir=ltr] .md-nav--primary .md-nav__item--section > .md-nav { margin-left: -0.6rem; }
+  /* Section-Margins/Item-Padding wie die Desktop-Spalte (sonst >=76.25em-gegatet) */
+  .md-nav__item--section { margin: 1.25em 0; }
+  .md-nav__item--section:last-child { margin-bottom: 0; }
+  .md-nav--lifted > .md-nav__list > .md-nav__item--active.md-nav__item--section { margin: 0; }
+  .md-nav__item--section > .md-nav > .md-nav__list > .md-nav__item { padding: 0; }
+  /* Aufklapp-Icons rund und .9rem inline statt mobiler 1.2rem-Absolut-Pfeile.
+     Selektor-Spezifität = Materials mobile Regel (.md-nav--primary .md-nav__link
+     .md-nav__icon), damit der spätere Override sie schlägt. */
+  .md-nav--primary .md-nav__link .md-nav__icon {
     position: static;
-    height: auto;
-    line-height: 1.5;
-    padding: 0 0.6rem;
-    background-color: transparent;
-    box-shadow: none;
-    cursor: auto;
-    white-space: normal;
+    top: auto;
+    right: auto;
+    left: auto;
+    width: 0.9rem;
+    height: 0.9rem;
+    margin: 0;
+    font-size: 0.9rem;
+    border-radius: 100%;
   }
-  .md-nav--primary .md-nav__title .md-nav__icon { display: none; }
-  /* navigation.tabs (lifted): nur aktiver Top-Abschnitt, kein Top-Titel */
+  .md-nav--primary .md-nav__link .md-nav__icon::after {
+    display: inline-block;
+    vertical-align: -0.1rem;
+    border-radius: 100%;
+  }
+  /* Kein Aufklapp-Pfeil an der Abschnitts-Überschrift (Kinder sind ohnehin offen) */
+  .md-nav__item--section > .md-nav__link .md-icon { display: none; }
+  /* Aktiv-Pfad-Labels (Abschnitt der aktuellen Seite) nicht lila: Material färbt
+     mobil den ganzen Pfad, Desktop nur den echten Aktiv-Link */
+  .md-nav--primary .md-nav__item--active > .md-nav__link:not(.md-nav__link--active) {
+    color: var(--md-default-fg-color);
+  }
+  .md-nav--lifted > .md-nav__list > .md-nav__item--active > label.md-nav__link {
+    color: var(--md-default-fg-color--light); font-weight: 700;
+  }
+  /* Drawer-Pane-Titel entfernen (Desktop-Spalte zeigt keine) */
+  .md-nav--primary .md-nav__title { display: none; }
+  /* navigation.tabs (lifted): nur aktiver Top-Abschnitt */
   .md-nav--lifted > .md-nav__list > .md-nav__item { display: none; }
   .md-nav--lifted > .md-nav__list > .md-nav__item--active { display: block; }
-  .md-nav--lifted > .md-nav__title { display: none; }
   /* Unterpunkte als Accordion (wie Desktop), kein Slide-in-Drawer */
   .md-nav__toggle ~ .md-nav {
     display: grid;
@@ -268,9 +305,12 @@ body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
   .md-nav__item--nested .md-toggle--indeterminate ~ .md-nav__link .md-nav__icon::after {
     transform: rotate(90deg);
   }
-  /* integrierten „Inhaltsverzeichnis"-Eintrag im Nav ausblenden (eigenes TOC-Overlay) */
+  /* integrierten „Inhaltsverzeichnis"-Eintrag im Nav ausblenden (eigenes TOC-Overlay);
+     stattdessen den echten Aktiv-Link der Seite zeigen (Material blendet ihn mobil
+     zugunsten des __toc-Umschalters aus) */
   .md-nav--primary .md-nav__link[for="__toc"],
   .md-nav--primary .md-nav__link[for="__toc"] ~ .md-nav { display: none; }
+  .md-nav--primary .md-nav__link[for="__toc"] + a.md-nav__link--active { display: flex; }
 }
 
 /* ── Nav als Spalte zwischen 60–76.25em (statt Material-Drawer) ──────────────── */
@@ -289,11 +329,13 @@ body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
   [dir=ltr] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner { margin-left: 1.2rem; }
 }
 
-/* Overlays liegen ABSOLUT im Content-Bereich -> Box-Höhe = Höhe des Parents
-   (= Content), nicht Viewport, nicht Eigeninhalt. Bezug: */
-.md-main__inner { position: relative; }
+/* Overlay-Bezug: .md-main ist flex:1 und spannt exakt Header-Unterkante→Footer-
+   Oberkante. Overlays liegen ABSOLUT darin mit top:0;bottom:0 -> beginnen direkt
+   unter dem Header und enden bündig an der Footer-Oberkante (auch auf kurzen Seiten
+   ohne Scrollbar). .md-main__inner bleibt static, damit .md-main der Bezug ist. */
+.md-main { position: relative; }
 
-/* ── Nav als Overlay unter 60em (über dem Text, Höhe = Content) ──────────────── */
+/* ── Nav als Overlay unter 60em (über dem Text, Header→Footer) ───────────────── */
 @media screen and (max-width: 59.984375em) {
   .md-sidebar--primary:not([hidden]) { display: none; }
   html:has(#rt-nav-toggle:checked) .md-sidebar--primary:not([hidden]) {
@@ -301,7 +343,7 @@ body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
     position: absolute;
     top: 0;
     left: 0;
-    height: 100%;             /* = Höhe des Parents (Content) */
+    height: 100%;             /* = .md-main: unter Header bis Footer-Oberkante */
     transform: none;
     overflow-y: auto;
     z-index: 6;
@@ -310,7 +352,7 @@ body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
   }
 }
 
-/* ── TOC als Overlay unter 76.25em (spiegelbildlich, Höhe = Content) ─────────── */
+/* ── TOC als Overlay unter 76.25em (spiegelbildlich, Header→Footer) ──────────── */
 @media screen and (max-width: 76.234375em) {
   .md-sidebar--secondary:not([hidden]) { display: none; }
   html:has(#rt-toc-toggle:checked) .md-sidebar--secondary:not([hidden]) {
@@ -318,11 +360,13 @@ body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
     position: absolute;
     top: 0;
     right: 0;
-    height: 100%;             /* = Höhe des Parents (Content), spiegelbildlich */
+    height: 100%;             /* = .md-main: unter Header bis Footer-Oberkante */
     overflow-y: auto;
     z-index: 6;
     background: var(--md-default-bg-color);
     box-shadow: var(--md-shadow-z3);
+    padding-left: 0.6rem;     /* Innenabstand zum Text (wie der Nav-Einzug); Material
+                                 gated das sonst auf >=60em */
   }
 }
 
@@ -383,6 +427,9 @@ body {
   position: fixed;
   left: 0;
   right: 0;
+  z-index: 8;               /* über den .rt-toolbar-Toggles (z-index 7), damit das
+                               aufgeklappte rt-Menü sie verdeckt; Header bildet als
+                               fixed-Element einen eigenen Stacking-Context */
   box-shadow: none !important;
   background-color: transparent;
   background-image: linear-gradient(to bottom,
@@ -589,9 +636,17 @@ body {
   height: 2px;
   background-color: var(--rt-accent);
   transform: translateX(-50%);
-  transition: width 0.3s cubic-bezier(0.395, 0.325, 0.365, 0.995);
+  transition: width 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
-.md-tabs__item--active .md-tabs__link::after,
+.md-tabs__item--active .md-tabs__link::after {
+  --rt-tab-underline-w: 40%;
+  width: var(--rt-tab-underline-w);
+  animation: rt-tab-underline-in 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+@keyframes rt-tab-underline-in {
+  from { width: 100%; }
+  to { width: var(--rt-tab-underline-w); }
+}
 .md-tabs__link:hover::after,
 .md-tabs__link:focus::after {
   width: 100%;
@@ -608,8 +663,11 @@ body {
 .md-header__inner > .rt-menu-btn { display: none; }
 .rt-menu { display: none; }
 
-/* 1) Zuerst weicht die Wortmarke; Suche/Schema rechts per auto-Margin gehalten. */
-@media screen and (max-width: 60em) {
+/* 1) Zuerst weicht die Wortmarke; Suche/Schema rechts per auto-Margin gehalten.
+   Grenze deckungsgleich mit der Nav-Overlay-Grenze (59.984375em), damit die linke
+   Nav nie als Spalte erscheint, solange die Wortmarke schon ausgeblendet ist —
+   sonst „springt" die Spalte bei ~960 px auf, während die Wortmarke verschwindet. */
+@media screen and (max-width: 59.984375em) {
   .md-header__title { display: none; }
   .md-header__inner > .md-header__button[for="__search"] { margin-left: auto; }
 }
@@ -619,6 +677,10 @@ body {
   .md-header__inner > .md-tabs { display: none; }
   .md-header__inner > .rt-menu-btn {
     order: 2;
+    position: absolute;
+    left: 50%;
+    bottom: var(--rt-gap);
+    transform: translateX(-50%);
     display: flex;
     align-items: flex-end;
     padding-bottom: 0;
@@ -629,9 +691,11 @@ body {
     position: absolute;
     top: 100%;
     left: 0;
-    min-width: 13rem;
+    right: 0;
     z-index: 6;
-    background-color: var(--rt-header-solid);
+    max-height: calc(100vh - var(--rt-hh));
+    overflow-y: auto;
+    /* background-color: var(--rt-header-solid); */
     -webkit-backdrop-filter: saturate(1.15) blur(8px);
     backdrop-filter: saturate(1.15) blur(8px);
     border-bottom: 2px solid var(--rt-header-rule);
