@@ -28,6 +28,10 @@
   margin: 0 auto 2rem;
 }
 
+.md-button{
+  border-radius: 3px;
+}
+
 .md-typeset .md-button {
   text-shadow: none;
   transition: color 125ms, background-color 125ms, border-color 125ms,
@@ -35,24 +39,24 @@
 }
 .md-typeset .md-button:focus,
 .md-typeset .md-button:hover {
-  background-color: color-mix(in oklab, var(--rt-accent) 80%, #000);
-  border-color: color-mix(in oklab, var(--rt-accent) 80%, #000);
+  background-color: color-mix(in oklab, var(--md-accent-fg-color) 80%, #000);
+  border-color: color-mix(in oklab, var(--md-accent-fg-color) 80%, #000);
   color: #fff;
-  text-shadow: 0 0 10px color-mix(in oklab, var(--rt-paper) 55%, transparent);
+  text-shadow: 0 0 10px color-mix(in oklab, var(--md-default-bg-color) 55%, transparent);
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px color-mix(in oklab, var(--rt-ink) 20%, transparent);
+  box-shadow: 0 4px 14px color-mix(in oklab, var(--md-default-fg-color) 20%, transparent);
 }
 
 [data-md-color-scheme="slate"] .md-typeset .md-button--primary {
-  background-color: var(--rt-accent);
-  border-color: var(--rt-accent);
-  color: var(--rt-paper);
+  background-color: var(--md-accent-fg-color);
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-default-bg-color);
 }
 [data-md-color-scheme="slate"] .md-typeset .md-button--primary:focus,
 [data-md-color-scheme="slate"] .md-typeset .md-button--primary:hover {
-  background-color: color-mix(in oklab, var(--rt-accent) 82%, #fff);
-  border-color: color-mix(in oklab, var(--rt-accent) 82%, #fff);
-  color: var(--rt-paper);
+  background-color: color-mix(in oklab, var(--md-accent-fg-color) 82%, #fff);
+  border-color: color-mix(in oklab, var(--md-accent-fg-color) 82%, #fff);
+  color: var(--md-default-bg-color);
 }
 
 .md-typeset .grid.cards > ul > li {
@@ -71,15 +75,15 @@
 }
 
 .md-typeset .schatten {
-  box-shadow: 0 4px 16px color-mix(in oklab, var(--rt-ink) 16%, transparent);
+  box-shadow: 0 4px 16px color-mix(in oklab, var(--md-default-fg-color) 16%, transparent);
 }
 .md-typeset .schatten-stark {
-  box-shadow: 0 8px 26px color-mix(in oklab, var(--rt-ink) 26%, transparent);
+  box-shadow: 0 8px 26px color-mix(in oklab, var(--md-default-fg-color) 26%, transparent);
 }
 
 .md-typeset .shadow,
 .md-typeset .shadow img {
-  filter: drop-shadow(0 10px 26px color-mix(in oklab, var(--rt-ink) 22%, transparent));
+  filter: drop-shadow(0 10px 26px color-mix(in oklab, var(--md-default-fg-color) 22%, transparent));
 }
 
 body[data-md-color-scheme] .md-content__button {
@@ -90,32 +94,42 @@ body[data-md-color-scheme] .md-content__button {
 }
 
 :root {
-  --rt-paper:     #fafaf7;
-  --rt-ink:       #0a0a0a;
-  --rt-accent:    #6d28d9;
+  --rt-blue:      #2563eb;
   --rt-highlight: #16a34a;
   --rt-display:   "Herculanum", "Trajan Pro", "Cinzel", "Cormorant Garamond", Georgia, serif;
 }
 
+/* Farb-Palette direkt auf den Standard-Material-Variablen (= Single Source of
+   Truth). Eigene --rt-* nur noch fuer Dinge ohne --md-Pendant (Karten-Blau,
+   Akzent-Gruen, Header-Masse, Display-Font). Primary/Header bleibt unberuehrt
+   (white-Palette). Foreground solid (dient auch als Schatten-/Tint-Basis). */
 [data-md-color-scheme="default"] {
-  --md-default-bg-color: var(--rt-paper);
-  --md-accent-fg-color:  var(--rt-accent);
-  --md-typeset-a-color:  var(--rt-accent);
+  --md-default-fg-color:             #0a0a0a;
+  --md-default-fg-color--light:      color-mix(in srgb, var(--md-default-fg-color) 56%, transparent);
+  --md-default-fg-color--lighter:    color-mix(in srgb, var(--md-default-fg-color) 34%, transparent);
+  --md-default-fg-color--lightest:   color-mix(in srgb, var(--md-default-fg-color) 8%, transparent);
+  --md-default-bg-color:             #fafaf7;
+  --md-accent-fg-color:              #6d28d9;
+  --md-accent-fg-color--transparent: color-mix(in srgb, var(--md-accent-fg-color) 10%, transparent);
+  --md-typeset-a-color:              var(--md-accent-fg-color);
 }
 
 [data-md-color-scheme="slate"] {
-  --rt-paper:   #1b1a17;
-  --rt-ink:     #ece8e0;
-  --rt-accent:  #b69cff;
-  --rt-header-rule:  color-mix(in oklab, var(--rt-accent) 28%, transparent);
-  --rt-header-solid: color-mix(in oklab, var(--rt-paper) 86%, transparent);
-  --md-default-bg-color: var(--rt-paper);
-  --md-accent-fg-color:  var(--rt-accent);
-  --md-typeset-a-color:  var(--rt-accent);
+  --rt-blue:    #7da2ff;
+  --rt-header-rule:  color-mix(in oklab, var(--md-accent-fg-color) 28%, transparent);
+  --rt-header-solid: color-mix(in oklab, var(--rt-header-paper) 56%, transparent);
+  --md-default-fg-color:             #ece8e0;
+  --md-default-fg-color--light:      color-mix(in srgb, var(--md-default-fg-color) 56%, transparent);
+  --md-default-fg-color--lighter:    color-mix(in srgb, var(--md-default-fg-color) 36%, transparent);
+  --md-default-fg-color--lightest:   color-mix(in srgb, var(--md-default-fg-color) 12%, transparent);
+  --md-default-bg-color:             #1b1a17;
+  --md-accent-fg-color:              #b69cff;
+  --md-accent-fg-color--transparent: color-mix(in srgb, var(--md-accent-fg-color) 10%, transparent);
+  --md-typeset-a-color:              var(--md-accent-fg-color);
 }
 
 .md-typeset h1, .md-typeset h2, .md-typeset h3,
-.md-typeset h4, .md-header__title {
+.md-typeset h4, .rt-wordmark {
   font-family: var(--rt-display);
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -123,7 +137,7 @@ body[data-md-color-scheme] .md-content__button {
 
 .md-typeset hr {
   border: 0;
-  border-top: 1px solid color-mix(in oklab, var(--rt-ink) 16%, transparent);
+  border-top: 1px solid color-mix(in oklab, var(--md-default-fg-color) 16%, transparent);
   max-width: 460px;
   margin: 3rem auto;
   line-height: 0;
@@ -135,7 +149,7 @@ body[data-md-color-scheme] .md-content__button {
   font-family: "Noto Sans Runic", var(--rt-display);
   font-size: 1rem;
   letter-spacing: 0.35em;
-  color: var(--rt-accent);
+  color: var(--md-accent-fg-color);
   background: var(--md-default-bg-color);
   padding: 0 1.1em;
   opacity: 0.85;
@@ -374,19 +388,28 @@ body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
 .md-overlay { display: none; }
 
 :root {
-  --rt-header-rule: color-mix(in oklab, var(--rt-accent) 22%, transparent);
-  --rt-header-solid: color-mix(in oklab, var(--rt-paper) 86%, transparent);
+  --rt-header-rule: color-mix(in oklab, var(--md-accent-fg-color) 22%, transparent);
+  /* Header-Flaeche einen Hauch abgesetzt vom Inhalts-Pergament (hebt die Kopfleiste ab) */
+  --rt-header-paper: color-mix(in oklab, var(--md-default-bg-color) 93%, var(--md-default-fg-color));
+  --rt-header-solid: color-mix(in oklab, var(--rt-header-paper) 86%, transparent);
   /* Breite der (zentrierten) Navbar = Logo + Tabs; für bündige linke Suchfeld-Kante */
   --rt-navbar-w: 19.4rem;
+}
+
+/* Im Dark Mode KEIN Aufhellen der Kopfleiste: das Abheben via --rt-ink-Beimischung
+   lässt den dunklen Header grau wirken -> auf reines (dunkles) Pergament zurück. */
+[data-md-color-scheme="slate"] {
+  --rt-header-paper: var(--md-default-bg-color);
 }
 
 /*
  * Header-Minimierung beim Scrollen — eine Logik für ALLE Seiten, rein per CSS.
  *
  * Eine Scroll-Timeline treibt EINEN Fortschritt --rt-p (0→1) über die ersten
- * Scroll-Pixel (Bereich = volle Headerhöhe). Alle Header-Maße werden daraus per
- * calc() zwischen einem "voll"- und einem "min"-Wert interpoliert — die
- * --rt-*-full/-min-Variablen sind die einzige Quelle, sonst keine Zahlen.
+ * Scroll-Pixel (Bereich = doppelte Headerhöhe, ease-in-out für weiche Enden).
+ * Alle Header-Maße werden daraus per calc() zwischen einem "voll"- und einem
+ * "min"-Wert interpoliert — die --rt-*-full/-min-Variablen sind die einzige
+ * Quelle, sonst keine Zahlen.
  *   • Nur --rt-p braucht @property (sonst kein Interpolieren, Sprung bei 50 %);
  *     from/to im Keyframe müssen beide gesetzt sein.
  *   • Kein JS-Toggle: der koppelte früher über die Dokumenthöhe zurück und ließ
@@ -400,22 +423,27 @@ body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
  */
 :root {
   --rt-hh-full: 4.8rem;     --rt-hh-min: 2.4rem;
-  --rt-gap-full: 0.55rem;   --rt-gap-min: 0.3rem;
+  --rt-gap-full: 1.3rem;   --rt-gap-min: 0.55rem;
   --rt-logo-full: 2.6rem;   --rt-logo-min: 1.2rem;
   --rt-title-full: 1.55rem; --rt-title-min: 0.9rem;
+  --rt-tab-full: 0.9rem;   --rt-tab-min: 0.72rem;
+  --rt-symbol: 1.1rem;      /* Eichhoernchen-Symbol im Home-Tab; Referenzgroesse */
 }
 @property --rt-p { syntax: "<number>"; inherits: true; initial-value: 0; }
 @keyframes rt-header-minimize { from { --rt-p: 0; } to { --rt-p: 1; } }
 
 body {
-  animation: rt-header-minimize linear both;
+  /* ease-in-out + laengere Strecke = sanfter Uebergang (weiche Enden statt
+     linearem, kurzem Schrumpfen) */
+  animation: rt-header-minimize ease-in-out both;
   animation-timeline: scroll(root);
-  animation-range: 0 var(--rt-hh-full);
+  animation-range: 0 calc(var(--rt-hh-full) * 2);
   --rt-hh:       calc(var(--rt-hh-full)    + (var(--rt-hh-min)    - var(--rt-hh-full))    * var(--rt-p));
   --rt-gap:      calc(var(--rt-gap-full)   + (var(--rt-gap-min)   - var(--rt-gap-full))   * var(--rt-p));
   --rt-logo-h:   calc(var(--rt-logo-full)  + (var(--rt-logo-min)  - var(--rt-logo-full))  * var(--rt-p));
   --rt-title-fs: calc(var(--rt-title-full) + (var(--rt-title-min) - var(--rt-title-full)) * var(--rt-p));
-  --rt-solid:    var(--rt-p);
+  --rt-tab-fs:   calc(var(--rt-tab-full)   + (var(--rt-tab-min)   - var(--rt-tab-full))   * var(--rt-p));
+  --rt-solid:    calc(var(--rt-p) * 0.8);   /* minimiert nicht voll deckend -> transparenter */
   --rt-header-h: var(--rt-hh);
 }
 
@@ -433,17 +461,17 @@ body {
   box-shadow: none !important;
   background-color: transparent;
   background-image: linear-gradient(to bottom,
-    color-mix(in oklab, var(--rt-paper) 78%, transparent) 0%,
-    color-mix(in oklab, var(--rt-paper) 52%, transparent) 60%,
-    color-mix(in oklab, var(--rt-paper) 30%, transparent) 100%);
+    color-mix(in oklab, var(--rt-header-paper) 78%, transparent) 0%,
+    color-mix(in oklab, var(--rt-header-paper) 52%, transparent) 60%,
+    color-mix(in oklab, var(--rt-header-paper) 30%, transparent) 100%);
   transition: background-color 0.25s ease, backdrop-filter 0.25s ease;
 }
 [data-md-color-scheme="slate"] .md-header {
   background-color: transparent;
   background-image: linear-gradient(to bottom,
-    color-mix(in oklab, var(--rt-paper) 52%, transparent) 0%,
-    color-mix(in oklab, var(--rt-paper) 30%, transparent) 60%,
-    color-mix(in oklab, var(--rt-paper) 12%, transparent) 100%);
+    color-mix(in oklab, var(--rt-header-paper) 52%, transparent) 0%,
+    color-mix(in oklab, var(--rt-header-paper) 30%, transparent) 60%,
+    color-mix(in oklab, var(--rt-header-paper) 12%, transparent) 100%);
 }
 .md-header::before {
   content: "";
@@ -465,7 +493,9 @@ body {
   z-index: -1;
   pointer-events: none;
   opacity: var(--rt-solid);
-  background-color: var(--rt-header-solid);
+  background-image: linear-gradient(to bottom,
+    color-mix(in oklab, var(--rt-header-solid) 90%, var(--md-default-fg-color)) 0%,
+    var(--rt-header-solid) 100%);
   -webkit-backdrop-filter: saturate(1.15) blur(8px);
   backdrop-filter: saturate(1.15) blur(8px);
 }
@@ -482,38 +512,27 @@ body {
   padding-bottom: var(--rt-gap);
 }
 
-.md-header .md-header__button.md-logo,
-.md-header__title {
-  align-self: center;
-  margin-bottom: calc(-1 * var(--rt-gap));
-}
+/* Logo + Wortmarke = EIN Home-Link; margin-right:auto haelt die rechten Controls rechts */
 .md-header .md-header__button.md-logo {
+  align-self: center;
   order: 1;
   display: flex;
   align-items: center;
-  margin: 0 0 calc(-1 * var(--rt-gap));
+  gap: 0.3rem;
+  margin: 0 auto calc(-1 * var(--rt-gap)) 0;
+  transition: color 0.2s ease;
 }
 .md-header .md-logo svg {
   height: var(--rt-logo-h);
   width: auto;
 }
-.md-header__title {
-  order: 2;
-  display: flex;
-  align-items: center;
-  margin: 0 auto calc(-1 * var(--rt-gap)) 0;
+.rt-wordmark {
   font-size: var(--rt-title-fs);
   line-height: 1;
 }
-.md-header .md-header__title {
-  margin-left: 0.3rem;
-}
-.md-header__title .md-header__topic:first-child {
-  position: relative;
-}
-.md-header__title .md-header__ellipsis {
-  display: flex;
-  align-items: center;
+.md-header .md-header__button.md-logo:hover,
+.md-header .md-header__button.md-logo:focus-visible {
+  color: var(--md-accent-fg-color);
 }
 
 .md-header__inner > .md-header__button[for="__search"] {
@@ -536,6 +555,13 @@ body {
   align-items: flex-end;
   padding-bottom: 0;
   margin-bottom: 0;
+}
+/* Rechte Buttons optisch so gross wie das randvolle Home-Symbol; die Material-Icons
+   haben Innenabstand in ihrer viewBox -> Box um den Faktor groesser anlegen. */
+.md-header__inner > .md-header__button[for="__search"] svg,
+.md-header__inner > .md-header__option > label.md-header__button svg {
+  width: var(--rt-symbol);
+  height: var(--rt-symbol);
 }
 
 /* Eingebettetes Suchfeld nur ab 60em; darunter Materials nativer Overlay
@@ -619,12 +645,15 @@ body {
   height: 100%;
   margin: 0;
   padding: 0 0.45rem var(--rt-gap);
-  font-size: 0.72rem;
+  font-size: var(--rt-tab-fs);
+  font-weight: bold;
   line-height: 1.1;
-  transition: color 0.2s ease, opacity 0.25s ease, padding 0.25s ease;
+  /* KEIN padding-Transition: die vertikale Position (--rt-gap) ist scroll-getrieben
+     und muss synchron zur Groesse (font-size) laufen, sonst hinkt sie 0.25s nach */
+  transition: color 0.2s ease, opacity 0.25s ease;
 }
 .md-tabs__item--active .md-tabs__link {
-  color: var(--rt-accent);
+  color: var(--md-accent-fg-color);
   opacity: 1;
 }
 .md-tabs__link::after {
@@ -634,7 +663,7 @@ body {
   bottom: 0;
   width: 0;
   height: 2px;
-  background-color: var(--rt-accent);
+  background-color: var(--md-accent-fg-color);
   transform: translateX(-50%);
   transition: width 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
@@ -668,7 +697,7 @@ body {
    Nav nie als Spalte erscheint, solange die Wortmarke schon ausgeblendet ist —
    sonst „springt" die Spalte bei ~960 px auf, während die Wortmarke verschwindet. */
 @media screen and (max-width: 59.984375em) {
-  .md-header__title { display: none; }
+  .rt-wordmark { display: none; }
   .md-header__inner > .md-header__button[for="__search"] { margin-left: auto; }
 }
 
@@ -700,27 +729,33 @@ body {
     backdrop-filter: saturate(1.15) blur(8px);
     border-bottom: 2px solid var(--rt-header-rule);
   }
-  .rt-menu .md-tabs__list,
-  .rt-menu .md-tabs__item { display: block; height: auto; }
+  .rt-menu .md-tabs__list {
+    display: flex;
+    flex-wrap: wrap;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* schneidet die äußeren Trennstriche weg */
+  }
+  .rt-menu .md-tabs__item {
+    flex: 1 1 auto;
+    display: block;
+    height: auto;
+    padding: 0;
+    /* Trennstriche: links (vertikal zwischen Einträgen) + oben (horizontal bei Umbruch) */
+    box-shadow: -1px 0 0 var(--rt-header-rule), 0 -1px 0 var(--rt-header-rule);
+  }
   .rt-menu .md-tabs__link {
     height: auto;
+    justify-content: center;
     align-items: center;
-    padding: 0.65rem 1.25rem;
+    padding: 0.5rem 0.75rem;
     font-size: 0.9rem;
   }
   .rt-menu .md-tabs__link::after { display: none; }
-  .rt-menu .md-tabs__item--active .md-tabs__link { color: var(--rt-accent); }
+  .rt-menu .md-tabs__item--active .md-tabs__link { color: var(--md-accent-fg-color); }
 }
 
-.md-header__topic + .md-header__topic {
-  display: none;
-}
-.md-header__title--active .md-header__topic:first-child {
-  opacity: 1;
-  pointer-events: auto;
-  transform: none;
-  z-index: 0;
-}
 
 .md-footer-legal {
   display: flex;
@@ -744,11 +779,11 @@ body {
 .md-tabs__home {
   display: inline-flex;
   align-items: center;
-  color: #6d28d9;
+  /* color: #6d28d9; */
 }
 .md-tabs__home svg {
-  height: 1.1rem;
-  width: 1.1rem;
+  height: var(--rt-symbol);
+  width: var(--rt-symbol);
   fill: currentColor;
 }
 .md-tabs__home-label {
@@ -759,4 +794,188 @@ body {
   clip: rect(0 0 0 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Titelbild (Frontmatter titelbild:), big-Callout, Parallax-Callout, Teaser —
+   seitenunabhaengig, nicht auf .home gescoped. */
+.rt-titelbild {
+  position: absolute; top: 0; left: 0; z-index: -1;
+  width: 100vw; height: clamp(420px, 78vh, 760px);
+  overflow: hidden; pointer-events: none;
+}
+.rt-titelbild img {
+  position: absolute; left: 0; right: 0; bottom: 0; top: auto;
+  width: 100%; height: 124%; object-fit: cover; display: block;
+  animation: rt-titelbild-parallax linear both;
+  animation-timeline: scroll(root);
+  animation-range: 0 100vh;
+  will-change: transform;
+}
+@keyframes rt-titelbild-parallax { from { transform: translateY(0); } to { transform: translateY(12%); } }
+@media (prefers-reduced-motion: reduce) {
+  .rt-titelbild img { animation: none; }
+}
+.rt-titelbild::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 52%,
+      color-mix(in oklab, var(--md-default-bg-color) 70%, transparent) 0%,
+      color-mix(in oklab, var(--md-default-bg-color) 40%, transparent) 55%, transparent 85%),
+    linear-gradient(to bottom, transparent 55%, var(--md-default-bg-color) 100%);
+}
+
+.md-typeset .admonition.big {
+  container-type: inline-size;
+  border: 0; border-radius: 0; box-shadow: none; background: none; font-size: 1rem;
+  padding: clamp(8px, 1vh, 14px) clamp(16px, 2vw, 28px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; gap: 22px;
+}
+
+.md-typeset .admonition.big > * { max-width: 760px; margin: 0; }
+.md-typeset .admonition.big > .admonition-title {
+  margin: 0; padding: 0; background: none; border: 0; font-weight: 400;
+  font-family: var(--rt-display);
+  font-size: 16cqi; line-height: 0.95;
+  letter-spacing: 0.04em; text-transform: uppercase; color: var(--md-default-fg-color);
+  max-width: 100%; overflow-wrap: break-word; text-wrap: balance;
+  text-shadow: 0 1px 2px color-mix(in oklab, var(--md-default-bg-color) 70%, transparent),
+               0 0 14px color-mix(in oklab, var(--md-default-bg-color) 60%, transparent);
+}
+.md-typeset .admonition.big > .admonition-title:has(br) {
+  font-size: min(40px, 2.4cqi); line-height: 1.15;
+}
+.md-typeset .admonition.big > .admonition-title::before { display: none; }
+.md-typeset .admonition.big > p {
+  font-size: clamp(16px, 1.6vw, 19px); line-height: 1.55;
+  color: var(--md-default-fg-color);
+  text-shadow: 0 1px 2px color-mix(in oklab, var(--md-default-bg-color) 78%, transparent),
+               0 0 10px color-mix(in oklab, var(--md-default-bg-color) 65%, transparent);
+}
+.md-typeset .admonition.big .md-button { margin: 8px 6px 0; }
+
+.md-typeset .admonition.parallax {
+  position: relative; overflow: hidden; isolation: isolate;
+  border: 0; box-shadow: none; background: transparent;
+}
+.md-typeset .admonition.parallax > .admonition-title { background: transparent; }
+.md-typeset .admonition.parallax > p:has(img) {
+  position: absolute; inset: 0; z-index: 0; margin: 0; max-width: none;
+  padding: 0; pointer-events: none;
+}
+.md-typeset .admonition.parallax > p:has(img) > a { display: block; width: 100%; height: 100%; }
+@keyframes rt-parallax { from { transform: translateY(0); } to { transform: translateY(-23%); } }
+.md-typeset .admonition.parallax > p:has(img) img {
+  width: 100%; height: 130%; object-fit: cover; display: block;
+  animation: rt-parallax linear both;
+  animation-timeline: view();
+  animation-range: cover 0% cover 100%;
+  will-change: transform;
+}
+.md-typeset .admonition.parallax > :not(p:has(img)) { position: relative; z-index: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .md-typeset .admonition.parallax > p:has(img) img { animation: none; transform: translateY(-11%); }
+}
+
+.md-typeset .rt-teasers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: clamp(24px, 3vw, 48px);
+  margin: clamp(8px, 2vh, 24px) auto clamp(56px, 9vh, 110px);
+}
+.md-typeset .rt-teaser {
+  position: relative; isolation: isolate; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  aspect-ratio: 4 / 5; border-radius: 8px;
+  text-align: center; text-decoration: none;
+  background: color-mix(in oklab, var(--md-default-fg-color) 8%, var(--md-default-bg-color));
+  transition: transform .25s ease, box-shadow .25s ease;
+  view-timeline-name: --rt-teaser-view;
+  view-timeline-axis: block;
+}
+.md-typeset .rt-teaser:hover,
+.md-typeset .rt-teaser:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 26px color-mix(in oklab, var(--md-default-fg-color) 22%, transparent);
+}
+.md-typeset .rt-teaser__img {
+  position: absolute; left: 0; right: 0; top: -15%; z-index: -2;
+  width: 100%; height: 130%; object-fit: cover; display: block;
+  animation: rt-teaser-parallax linear both;
+  animation-timeline: --rt-teaser-view;
+  animation-range: entry 0% entry 100%;
+  transition: scale .4s ease;
+  will-change: transform;
+}
+@keyframes rt-teaser-parallax { from { transform: translateY(9%); } to { transform: translateY(-9%); } }
+.md-typeset .rt-teaser:hover .rt-teaser__img,
+.md-typeset .rt-teaser:focus-visible .rt-teaser__img { scale: 1.05; }
+@media (prefers-reduced-motion: reduce) {
+  .md-typeset .rt-teaser__img { animation: none; transform: none; }
+}
+.md-typeset .rt-teaser::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(ellipse 100% 78% at 50% 50%,
+    color-mix(in oklab, #000 58%, transparent) 0%,
+    color-mix(in oklab, #000 34%, transparent) 52%,
+    color-mix(in oklab, #000 12%, transparent) 100%);
+  opacity: 0.18; transition: opacity .25s ease;
+}
+.md-typeset .rt-teaser:hover::after,
+.md-typeset .rt-teaser:focus-visible::after { opacity: 1; }
+.md-typeset .rt-teaser__cap {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 0 clamp(16px, 7%, 30px);
+}
+.md-typeset .rt-teaser__title {
+  font-family: var(--rt-display); font-weight: 500;
+  font-size: clamp(22px, 2.4vw, 30px); letter-spacing: 0.03em; line-height: 1.1;
+  color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7), 0 2px 14px rgba(0, 0, 0, 0.55);
+}
+.md-typeset .rt-teaser__text {
+  max-width: 34ch; font-size: 14px; line-height: 1.5;
+  color: color-mix(in oklab, #fff 92%, transparent);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75), 0 1px 10px rgba(0, 0, 0, 0.55);
+}
+
+/* Nice-Gallery-Vorschau (aus dem ``gallery``-Codeblock, siehe site_hooks.py).
+ * Responsives Grid mit adaptiven Spalten; jedes Bild fuellt seine Zelle als
+ * quadratische Kachel. Klick oeffnet die glightbox-Lightbox mit Bildunterschrift
+ * (auto_caption) — die Vorschau ersetzt nur das Grid, nicht den Viewer. */
+.md-typeset .rt-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+  gap: 0.5rem;
+  margin: 1em 0;
+}
+.md-typeset .rt-gallery > p { margin: 0; }
+.md-typeset .rt-gallery a.glightbox,
+.md-typeset .rt-gallery img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.md-typeset .rt-gallery img {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 6px;
+  transition: filter .2s ease, transform .2s ease;
+}
+.md-typeset .rt-gallery a.glightbox:hover img,
+.md-typeset .rt-gallery a.glightbox:focus-visible img {
+  filter: brightness(1.06);
+  transform: scale(1.02);
+}
+@media (prefers-reduced-motion: reduce) {
+  .md-typeset .rt-gallery img { transition: none; }
+  .md-typeset .rt-gallery a.glightbox:hover img,
+  .md-typeset .rt-gallery a.glightbox:focus-visible img { transform: none; }
+}
+
+.md-typeset hr {
+  max-width: 760px;
+}
+
+@media (max-width: 820px) {
+  .md-typeset .rt-teasers { grid-template-columns: 1fr; max-width: 380px; }
 }
