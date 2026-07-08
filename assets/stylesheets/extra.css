@@ -240,10 +240,14 @@ body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
 
 /* ── Linke Liste: IMMER Desktop-Spalten-Rendering (nie Material-Drawer) ───────── */
 @media screen and (max-width: 76.234375em) {
-  /* Container/Nav im Fluss statt absolut/voll-hoch. Rand um die Liste wie die
+  /* Container/Nav statt absolut/voll-hoch. Rand um die Liste wie die
      Desktop-Spalte (scrollwrap-Margin .2rem; Material setzt darunter margin:0 und
-     macht so das breitenabhängige inner-padding größer → Abstände driften). */
-  .md-sidebar--primary .md-sidebar__scrollwrap { position: relative; inset: auto; overflow: visible; margin: 0 0.2rem; }
+     macht so das breitenabhängige inner-padding größer → Abstände driften).
+     overflow-y:auto (nicht visible): als Spalte (60–76.25em, feste Höhe) scrollt
+     der Inhalt INTERN statt unerreichbar unten herauszuragen; im Overlay (<60em)
+     hat der scrollwrap keine feste Höhe → er scrollt nicht selbst, dort ist die
+     Sidebar der Scroller. */
+  .md-sidebar--primary .md-sidebar__scrollwrap { position: relative; inset: auto; overflow-y: auto; margin: 0 0.2rem; }
   [dir=ltr] .md-sidebar--primary .md-sidebar__inner { padding-right: 0.2rem; }
   [dir=rtl] .md-sidebar--primary .md-sidebar__inner { padding-left: 0.2rem; }
   .md-nav--primary,
@@ -335,21 +339,56 @@ body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
     left: auto;
     right: auto;
     transform: none;
-    height: auto;
+    height: calc(100vh - var(--rt-header-h));
     z-index: auto;
     background: transparent;
     box-shadow: none;
   }
+  .md-sidebar--primary:not([hidden]) .md-sidebar__scrollwrap { height: 100%; }
   [dir=ltr] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner { margin-left: 1.2rem; }
 }
 
-/* Overlay-Bezug: .md-main ist flex:1 und spannt exakt Header-Unterkante→Footer-
-   Oberkante. Overlays liegen ABSOLUT darin mit top:0;bottom:0 -> beginnen direkt
-   unter dem Header und enden bündig an der Footer-Oberkante (auch auf kurzen Seiten
-   ohne Scrollbar). .md-main__inner bleibt static, damit .md-main der Bezug ist. */
+/* ── Beide Spalten ab 76.25em: volle Bildschirmhöhe, Inhalt scrollt INTERN ────
+   Ohne Materials Sidebar-JS bleibt es bei height:0 (Default) auf .md-sidebar
+   und einem statischen top-Wert, der nicht zum dynamischen Header passt. Die
+   eigentliche Scrollbox (.md-sidebar__scrollwrap, hat per Material-Default
+   bereits overflow-y:auto) bekommt dadurch nie eine begrenzte Höhe -> eine
+   Liste, die länger ist als der Viewport, ragt unten unerreichbar heraus statt
+   INTERN zu scrollen; eine kürzere füllt die Spalte nicht bis zum Fuß.
+   Lösung wie beim bestehenden Overlay (Nav/TOC < 60/76.25em, siehe unten):
+   Spalte = feste Höhe (Viewport minus Header, wandert mit dessen Minimierung
+   mit), Scrollwrap darin auf 100% -> eigener Scrollbalken bei zu langem Inhalt,
+   sonst füllt die (transparente) Spalte trotzdem immer bis zum Fuß. */
+@media screen and (min-width: 76.25em) {
+  .md-sidebar--primary:not([hidden]),
+  .md-sidebar--secondary:not([hidden]) {
+    top: var(--rt-header-h);
+    height: calc(100vh - var(--rt-header-h));
+  }
+  .md-sidebar--primary:not([hidden]) .md-sidebar__scrollwrap,
+  .md-sidebar--secondary:not([hidden]) .md-sidebar__scrollwrap {
+    height: 100%;
+  }
+}
+
+/* Overlay-Bezug: .md-main ist der Positionierungs-Kontext (position:relative) für
+   die ABSOLUT liegenden Overlays — daran hängen top:0 sowie left:0/right:0 (linke/
+   rechte Kante). Die HÖHE der Overlays kommt NICHT aus diesem Bezug (100%/bottom:0
+   wäre die volle, lange Dokumenthöhe), sondern per calc(100vh - Header) aus dem
+   Viewport (siehe unten). .md-main__inner bleibt static, damit .md-main der Bezug ist. */
 .md-main { position: relative; }
 
-/* ── Nav als Overlay unter 60em (über dem Text, Header→Footer) ───────────────── */
+/* ── Overlay-Höhe (Nav & TOC): Viewport unter dem Header, EIN Scroll-Container ──
+   Höhe = Sichtbereich minus (mitwandernder) Header, NICHT height:100% — 100%
+   bezöge sich auf .md-main (position:relative) und wäre damit die volle, sehr
+   lange Dokumenthöhe; das Overlay ragt dann meterweit unerreichbar nach unten.
+   Der Scroll-Container ist die .md-sidebar selbst (overflow-y:auto, feste Höhe);
+   das innere .md-sidebar__scrollwrap darf daher KEIN eigenes overflow haben
+   (sonst zwei geschachtelte Scrollboxen, von denen die innere nie die volle
+   Höhe bekommt). Für die Nav ist scrollwrap bereits weiter oben auf
+   overflow:visible gesetzt; für das TOC hier ergänzt. */
+
+/* ── Nav als Overlay unter 60em (über dem Text) ─────────────────────────────── */
 @media screen and (max-width: 59.984375em) {
   .md-sidebar--primary:not([hidden]) { display: none; }
   html:has(#rt-nav-toggle:checked) .md-sidebar--primary:not([hidden]) {
@@ -357,7 +396,7 @@ body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
     position: absolute;
     top: 0;
     left: 0;
-    height: 100%;             /* = .md-main: unter Header bis Footer-Oberkante */
+    height: calc(100vh - var(--rt-header-h));
     transform: none;
     overflow-y: auto;
     z-index: 6;
@@ -366,15 +405,17 @@ body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
   }
 }
 
-/* ── TOC als Overlay unter 76.25em (spiegelbildlich, Header→Footer) ──────────── */
+/* ── TOC als Overlay unter 76.25em (spiegelbildlich) ────────────────────────── */
 @media screen and (max-width: 76.234375em) {
   .md-sidebar--secondary:not([hidden]) { display: none; }
+  /* scrollwrap ohne eigenes overflow -> die Sidebar ist der einzige Scroller */
+  .md-sidebar--secondary .md-sidebar__scrollwrap { overflow: visible; }
   html:has(#rt-toc-toggle:checked) .md-sidebar--secondary:not([hidden]) {
     display: block;
     position: absolute;
     top: 0;
     right: 0;
-    height: 100%;             /* = .md-main: unter Header bis Footer-Oberkante */
+    height: calc(100vh - var(--rt-header-h));
     overflow-y: auto;
     z-index: 6;
     background: var(--md-default-bg-color);
@@ -944,7 +985,11 @@ body {
  * (auto_caption) — die Vorschau ersetzt nur das Grid, nicht den Viewer. */
 .md-typeset .rt-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+  /* Kacheln mit Obergrenze statt 1fr-Streckung; auto-fit (nicht auto-fill)
+   * kollabiert leere Tracks, sodass justify-content nicht volle Zeilen
+   * wirklich zentriert statt links kleben zu lassen. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 14rem));
+  justify-content: center;
   gap: 0.5rem;
   margin: 1em 0;
 }
