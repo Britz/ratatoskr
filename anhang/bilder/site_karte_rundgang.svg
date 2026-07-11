@@ -1,0 +1,262 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 960 630" width="100%" role="img" aria-label="Lageplan des Lagers mit den Stationen des Rundgangs" class="rundgang-karte">
+<style>  .rundgang-karte { --mk-accent: #6d28d9; --mk-blue: #2563eb;
+                     --mk-halo: #fbf7ee; }
+  @media (prefers-color-scheme: dark) {
+    .rundgang-karte { --mk-accent: #b69cff; --mk-blue: #7da2ff;
+                       --mk-halo: #1b1a17; }
+  }
+  .flaeche { fill: #C19F5A; fill-opacity: .10; }
+  .linie { fill: none; stroke: #C19F5A; stroke-width: 1;
+           stroke-linejoin: round; stroke-linecap: round; }
+  .route { fill: none; stroke: var(--rt-blue, var(--mk-blue)); stroke-width: 2.5;
+           stroke-dasharray: .5 9; stroke-linecap: round; opacity: .75; }
+  .mk-grp   { cursor: pointer; }
+  .mk, .mk-disc { transform-box: fill-box; transform-origin: center;
+              transition: transform .16s ease; }
+  .mk-disc-fill { fill: var(--rt-blue, var(--mk-blue)); fill-opacity: .30;
+              transition: fill .16s ease, fill-opacity .16s ease; }
+  .mk-ring  { fill: none; stroke: var(--rt-blue, var(--mk-blue)); stroke-width: .6;
+              transition: stroke .16s ease; }
+  .mk-core  { fill: var(--rt-blue, var(--mk-blue)); transition: fill .16s ease; }
+  .mk-lbl   { font: 700 15px system-ui, sans-serif; fill: var(--md-accent-fg-color, var(--mk-accent));
+              paint-order: stroke; stroke: var(--md-default-bg-color, var(--mk-halo)); stroke-width: 2px;
+              stroke-linejoin: round; opacity: 1; pointer-events: none;
+              transition: opacity .15s ease .3s; }
+  .mk-sub   { font-weight: 400; font-size: 13px; }
+  .mk-grp:hover > .mk,      .mk-sat-a:hover .mk      { transform: scale(1.2); }
+  .mk-grp:hover > .mk-disc, .mk-sat-a:hover .mk-disc { transform: scale(2); }
+  .mk-grp:hover > .mk-disc .mk-disc-fill,
+  .mk-sat-a:hover .mk-disc-fill { fill: var(--md-accent-fg-color, var(--mk-accent)); fill-opacity: .55; }
+  .mk-grp:hover > .mk-disc .mk-ring,
+  .mk-sat-a:hover .mk-ring  { stroke: var(--md-accent-fg-color, var(--mk-accent)); }
+  .mk-grp:hover > .mk .mk-core,
+  .mk-sat-a:hover .mk-core  { fill: var(--md-accent-fg-color, var(--mk-accent)); }
+  .mk-grp:hover .mk-lbl,
+  .rundgang-karte:has(.mk-grp:hover) .mk-lbl { opacity: 0; transition: opacity .12s ease 0s; }
+  .mk-halo { fill: transparent; pointer-events: none; }
+  .mk-grp:hover .mk-halo { pointer-events: all; }
+  g[filter] { will-change: transform; }
+  .mk-star { opacity: 0; visibility: hidden;
+              transition: opacity .1s linear .25s, visibility 0s linear .35s; }
+  .mk-grp:hover .mk-star { opacity: 1; visibility: visible;
+              transition: opacity .15s ease 0s, visibility 0s 0s; }
+  .mk-spoke { stroke: var(--rt-blue, var(--mk-blue)); stroke-width: 1;
+              stroke-dasharray: 1 4; stroke-linecap: round; }
+  .mk-sat-a { cursor: pointer; }
+  .mk-sat   { transform-box: view-box; transform: scale(0);
+              transition: transform 0s linear .35s; }
+  .mk-grp:hover .mk-sat      { transform: scale(1);
+              transition: transform .32s cubic-bezier(.34,1.56,.64,1) 0s; }
+  .mk-sat-lbl  { font: 700 15px system-ui, sans-serif; fill: var(--md-accent-fg-color, var(--mk-accent));
+              paint-order: stroke; stroke: var(--md-default-bg-color, var(--mk-halo)); stroke-width: 2px;
+              stroke-linejoin: round; }
+  .mk-sat-a:hover .mk-sat-lbl { fill: var(--md-accent-fg-color, var(--mk-accent)); }</style>
+<defs>
+<filter id="rt-skizze" x="-10%" y="-10%" width="120%" height="120%"
+        color-interpolation-filters="sRGB">
+  <feTurbulence type="fractalNoise" baseFrequency="0.024" numOctaves="2" seed="11" result="n"/>
+  <feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G" result="d"/>
+  <feGaussianBlur in="d" stdDeviation="2.2" result="b"/>
+  <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="d"/></feMerge>
+</filter>
+<filter id="rt-skizze-flaeche" x="-10%" y="-10%" width="120%" height="120%"
+        color-interpolation-filters="sRGB">
+  <feTurbulence type="fractalNoise" baseFrequency="0.024" numOctaves="2" seed="11" result="n"/>
+  <feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+</filter>
+</defs>
+
+<!-- Rundgang-Route (gepunktet, in Stationsreihenfolge) -->
+<path class="route" d="M480,557 L480,438
+  L480,384 M480,346 L480,330
+  C420,345 360,352 310,368
+  C255,330 258,262 305,222
+  C340,155 400,128 480,130
+  C540,118 620,150 680,215
+  C700,252 725,278 740,310"/>
+
+<!-- Flaechen (Zelttuecher, Rumpf, Segel) -->
+<g filter="url(#rt-skizze-flaeche)">
+<path class="flaeche" d="M242,368 L290,288 L330,288 L378,368 Z"/>
+<path class="flaeche" d="M230,222 L257,176 L283,176 L310,222 Z"/>
+<path class="flaeche" d="M434,130 L466,78 L494,78 L526,130 Z"/>
+<path class="flaeche" d="M694,310 L726,258 L754,258 L786,310 Z"/>
+<path class="flaeche" d="M410,240 L444,222 L514,210 L584,222 L550,240 L480,228 Z"/>
+<path class="flaeche" d="M441,276 L458,267 L538,267 L521,276 Z"/>
+<path class="flaeche" d="M657,152 L650,167 L664,169 L667,164 L668,192 Q680,197 692,192 L693,164 L696,169 L710,167 L703,152 Z"/>
+<path class="flaeche" d="M425,468 C421,450 422,424 429,407 C434,397 448,394 454,403 C459,411 460,437 457,453 C455,463 449,468 443,468 Z"/>
+<path class="flaeche" d="M509,468 L508,420 Q506,404 510,398 Q514,393 524,392 Q534,393 538,398 Q542,404 540,420 L539,468 Z"/>
+<path class="flaeche" d="M402,544 Q480,556 558,544 Q480,570 402,544 Z"/>
+<path class="flaeche" d="M455,502 C452,514 452,524 456,536 L504,536 C508,524 508,514 505,502 Z"/>
+<path class="flaeche" d="M448,354 L512,354 L512,376 L448,376 Z"/>
+<g transform="translate(444.17,309.62) scale(0.5066)"><path fill="#C19F5A" fill-opacity=".9" stroke="none" d="M79.25699785868596,126.97107276691868C79.25699785868596,126.97107276691868 62.21358444882766,127.34330653575908 60.81798444882763,126.75130653575911C57.79398444882766,125.9393065357592 55.01478444882761,124.03930653575917 53.21928444882765,121.46130653575905C51.55788444882765,118.94030653575908 50.61525189690603,113.98767565525085 53.10037920230553,111.19081746856C55.585506507705034,108.39395928186914 58.26682807405712,107.23684912949543 58.26682807405712,107.23684912949543C56.199242198623814,102.28671245925501 55.97334418455809,101.32936942826504 56.72448444882768,97.78530653575912C57.475624713097204,94.2412436432533 59.90739895443083,92.80495809691917 61.544881671079835,92.26561815590986C62.42961054107248,91.97421378766866 64.21270134209453,91.47322660059288 66.00360359186084,91.5724599066986C67.52746699721662,91.65488193445269 69.06608513740288,92.3324078737205 69.7440303056612,92.7370266689385C71.21877998749895,93.61720321927285 73.89468444882768,96.30630653575909 73.28368444882761,99.45330653575918C72.67268444882764,102.60130653575915 71.25688444882762,106.56230653575906 68.59608444882763,109.10030653575912C66.86068444882766,110.92830653575908 64.0753783628506,112.52117922644989 64.0753783628506,112.52117922644989Q66.19263690314689,118.0453131888722 67.03985440677816,119.23975287552399Q67.67048444882765,115.33130653575915 68.9098844488276,114.2153065357591C69.82408444882762,112.47930653575914 71.5727844488276,111.47330653575904 72.82908444882764,110.04630653575907C73.54858444882765,109.05430653575918 73.36195940679049,108.08427756226982 73.28905940679049,106.93427756226984C73.2387594067905,106.14027756226974 72.94525006495597,104.71898990828065 73.15515006495598,103.96498990828066C73.5057500649559,101.78498990828064 75.99052837711068,100.79609873922033 75.99052837711068,100.79609873922033C75.67851812769783,99.62932276850731 77.15596970322069,98.68261486344477 77.15596970322069,98.68261486344477C78.07954376849787,97.35938888649099 78.07954376849787,97.35938888649099 78.12373533424169,95.83181399143317C78.79016787267386,95.90299503692661 80.36994220109352,101.3164618405462 80.36994220109352,101.3164618405462C81.69148806358011,102.4175804475485 81.69148806358011,102.4175804475485 82.56666077679432,103.63343828733278C83.44183349000855,104.84929612711706 83.87063305395039,106.17989319968333 83.87063305395039,106.17989319968333C83.87063305395039,106.17989319968333 84.24649378386331,106.70124596962435 84.80496621686811,107.19942695673282C85.44301235998942,107.76754680452052 86.26247629465925,108.35582684965229 86.04714355567842,108.98133716514282C85.64317995333565,110.15479272765536 83.78700943486717,110.5933476533442 82.1396578897906,110.85778149846485C80.49230634471404,111.1222153435855 79.1286940065571,110.78630554976974 78.81609400655705,110.73030554976972C79.27299400655707,112.1583055497697 79.84888444882766,114.57330653575907 79.44978444882764,116.40830653575907C80.26168444882765,117.44430653575908 80.11996875011585,117.59185552567678 80.91071875011585,117.63885552567682C81.70146875011581,117.68585552567681 82.14851148599425,117.16100724697333 82.61278444882758,116.5963065357591C82.57938444882767,115.37630653575927 83.93738444882764,112.20130653575917 85.71528444882762,114.02630653575916C85.76068444882766,114.96230653575917 86.73048444882764,115.00330653575914 87.76048444882761,115.04830653575918C88.48748444882769,115.07930653575912 89.24448444882762,115.11230653575913 89.72848444882761,115.46130653575906C90.35448444882765,116.89430653575909 88.85348444882757,118.55830653575917 87.74448444882759,119.7883065357591C87.6034844488276,119.94430653575904 87.46848444882764,120.09330653575914 87.3454844488276,120.23430653575919C86.34668444882763,121.44830653575904 83.6505844488276,118.76130653575918 85.29138444882763,117.99330653575915C86.73068444882763,116.63530653575914 84.61735944882764,116.43530653575907 83.85078444882761,117.26230653575905C83.08420944882764,118.08930653575906 82.81432610020207,118.5733965447374 81.62460110020204,121.1853965447374C80.43487610020203,123.79739654473744 79.25699785868596,126.97107276691868 79.25699785868596,126.97107276691868ZM64.9094844488276,102.03630653575914C65.40638444882767,100.28530653575913 64.6761844488276,98.15330653575907 63.44348444882762,97.83530653575909C62.21078444882764,97.51730653575908 61.24374573406256,99.1345720957233 60.74064573406257,100.92957209572333C60.23764573406255,102.72457209572327 61.43169006734887,105.46913095586208 61.43169006734887,105.46913095586208C64.43341135944797,103.5893005282802 64.9094844488276,102.03630653575914 64.9094844488276,102.03630653575914ZM65.4049072084812,123.925501569634C65.4049072084812,123.925501569634 61.564287858228255,114.10594034762242 61.564287858228255,114.10594034762242C60.12040135543431,115.41188850535094 57.97439111152917,118.77746164776853 58.894309882339726,121.06690844556961C59.81422865315031,123.35635524337049 65.4049072084812,123.925501569634 65.4049072084812,123.925501569634Z"/></g>
+
+</g>
+
+<!-- Bauten & Zeichnungen -->
+<g class="linie" filter="url(#rt-skizze)">
+  <!-- Schwertstaender (Tierkopf-Pfosten, den Bettpfosten nachempfunden) -->
+  <path d="M202,368 L202,330 M230,368 L230,330 M197,368 L207,368 M225,368 L235,368"/>
+  <path d="M202,330 C201,323 206,319 210,322 C212,324 211,327 209,327 M230,330 C229,323 234,319 238,322 C240,324 239,327 237,327"/>
+  <path d="M190,338 L242,338 M196,334 L196,342"/>
+  <circle cx="188" cy="338" r="1.7"/>
+  <path d="M192,348 L244,348 M238,344 L238,352"/>
+  <circle cx="246" cy="348" r="1.7"/>
+  <!-- Museumszelt -->
+  <path d="M242,368 L290,288 M330,288 L378,368 M242,368 L296,368 M324,368 L378,368"/>
+  <path d="M290,288 L290,368 M330,288 L330,368"/>
+  <path d="M290,288 Q310,297 330,288"/>
+  <path d="M296,368 L310,300 L324,368"/>
+  <path d="M302,347 L318,347 M304,347 L304,354 M316,347 L316,354"/>
+  <circle cx="306" cy="344" r="1.3"/><circle cx="310" cy="343" r="1.3"/><circle cx="314" cy="344" r="1.3"/>
+  <!-- Kleines Zelt + Kueche (Kesselgalgen: Kessel ueber Feuerschale) -->
+  <path d="M230,222 L257,176 M283,176 L310,222 M230,222 L310,222"/>
+  <path d="M257,176 L257,222 M283,176 L283,222"/>
+  <path d="M257,176 Q270,183 283,176"/>
+  <path d="M322,222 L331,192 L340,222 M350,222 L359,192 L368,222 M320,192 L370,192"/>
+  <path d="M345,192 L345,199"/>
+  <path d="M339,199 Q336,201 336,206 Q336,212 345,213 Q354,212 354,206 Q354,201 351,199 Z M338,199 L352,199"/>
+  <path d="M335,218 Q345,225 355,218 M339,220 L339,222 M351,220 L351,222"/>
+  <path d="M342,218 C341,215 344,214 343,211 C346,214 347,216 345,218 Z"/>
+  <!-- Schlafzelt 1 -->
+  <path d="M434,130 L466,78 M494,78 L526,130 M434,130 L526,130"/>
+  <path d="M466,78 L466,130 M494,78 L494,130"/>
+  <path d="M466,78 Q480,85 494,78"/>
+  <path d="M470,130 L480,94 L490,130"/>
+  <path d="M472,121 L488,121 M474,121 L474,127 M486,121 L486,127"/>
+  <path d="M473,118 Q477,115 480,118 Q484,115 487,118"/>
+  <!-- Schlafzelt 2 -->
+  <path d="M694,310 L726,258 M754,258 L786,310 M694,310 L786,310"/>
+  <path d="M726,258 L726,310 M754,258 L754,310"/>
+  <path d="M726,258 Q740,265 754,258"/>
+  <!-- zwischen den Zelten: das komplette Paket — Ruestungsstaender (Kettenhemd + Nasalhelm), Speer, Schilde, Bogen mit Pfeil -->
+  <path d="M680,134 L680,196 M680,196 L666,214 M680,196 L694,214 M660,215 L700,213"/>
+  <path d="M657,152 L650,167 L664,169 L667,164 L668,192 Q680,197 692,192 L693,164 L696,169 L710,167 L703,152 Z"/>
+  <path d="M670,178 Q680,181 690,178 M670,186 Q680,189 690,186"/>
+  <path d="M670,146 C672,134 676,128 680,128 C684,128 688,134 690,146 Z M680,146 L680,154"/>
+  <path d="M714,147 L724,213 M714,147 L709,159 L719,157 Z"/>
+  <circle cx="643" cy="205" r="14"/><circle cx="643" cy="205" r="3"/>
+  <circle cx="661" cy="213" r="14"/><circle cx="661" cy="213" r="3"/>
+  <path d="M734,151 Q750,179 734,207 M734,151 L734,207"/>
+  <path d="M720,179 L760,179 M760,179 L753,175 M760,179 L753,183 M720,179 L714,175 M720,179 L714,183"/>
+  <!-- Baldachin (eckig, 6 Pfosten) mit Tisch und Baenken (Lebensbereich) -->
+  <path d="M410,240 L444,222 L514,210 L584,222 L550,240 L480,228 Z"/>
+  <path d="M444,222 L444,296 M514,210 L514,296 M584,222 L584,296"/>
+  <path d="M410,240 L410,314 M480,228 L480,314 M550,240 L550,314"/>
+  <path d="M480,228 L514,210"/>
+  <path d="M441,276 L458,267 L538,267 L521,276 Z"/>
+  <path d="M441,276 L441,289 M521,276 L521,289 M538,267 L538,279"/>
+  <path d="M431,289 L511,289 M435,289 L435,298 M507,289 L507,298"/>
+  <path d="M470,258 L550,258 M474,258 L474,266 M546,258 L546,266"/>
+  <path d="M495,270 Q500,275 505,270 Z"/>
+  <circle cx="484" cy="270" r="2.5"/>
+  <!-- Eingang: Torschild (Pfosten + Brett mit Marke) und zwei Runensteine -->
+  <path d="M462,468 L462,376 M498,468 L498,376"/>
+  <path d="M448,354 L512,354 L512,376 L448,376 Z"/>
+  <path d="M425,468 C421,450 422,424 429,407 C434,397 448,394 454,403 C459,411 460,437 457,453 C455,463 449,468 443,468 Z"/>
+  <path d="M433,414 L433,422 M438,413 L438,421 M438,417 L442,413 M444,413 L444,421 M450,414 L450,421 M450,417 L446,421"/>
+  <path d="M432,430 L432,438 M437,429 L437,437 M437,433 L441,437 M443,429 L443,437 M449,430 L449,437"/>
+  <path d="M433,446 L433,453 M439,445 L439,453 M439,449 L443,445 M445,446 L445,453"/>
+  <path d="M509,468 L508,420 Q506,404 510,398 Q514,393 524,392 Q534,393 538,398 Q542,404 540,420 L539,468 Z"/>
+  <path d="M511,412 L537,411 M510,430 L538,429 M510,449 L538,448"/>
+  <path d="M513,404 L517,399 L521,404 L525,399 L529,404 L533,399"/>
+  <path d="M514,423 L520,417 M522,423 L528,417 M530,423 L536,417"/>
+  <path d="M514,443 L518,437 L522,443 L526,437 L530,443"/>
+  <path d="M512,463 Q524,467 536,463 M524,463 L524,455 M519,455 L529,455 L529,460 L519,460 Z M519,455 L529,460 M529,455 L519,460"/>
+  <!-- Zaun: Stoecke mit Seil — Grenze zwischen Lager (innen) und Hafen (aussen), Luecke am Tor -->
+  <path d="M160,450 L160,474 M212,450 L212,474 M264,450 L264,474 M316,450 L316,474 M368,450 L368,474 M420,450 L420,474"/>
+  <path d="M160,452 Q186,460 212,452 Q238,460 264,452 Q290,460 316,452 Q342,460 368,452 Q394,460 420,452"/>
+  <path d="M548,450 L548,474 M600,450 L600,474 M652,450 L652,474 M704,450 L704,474 M756,450 L756,474 M808,450 L808,474"/>
+  <path d="M548,452 Q574,460 600,452 Q626,460 652,452 Q678,460 704,452 Q730,460 756,452 Q782,460 808,452"/>
+  <!-- Hafen: Schiff auf dem Wasser -->
+  <path d="M402,544 Q480,556 558,544 Q480,570 402,544 Z"/>
+  <path d="M420,553 Q480,563 540,553"/>
+  <path d="M558,544 C570,536 574,522 568,512 C565,506 557,507 558,514 C559,519 564,520 566,516"/>
+  <path d="M402,544 C390,536 386,522 392,512 C395,506 403,507 402,514 C401,519 396,520 394,516"/>
+  <path d="M480,550 L480,488 M450,500 L510,500"/>
+  <path d="M455,502 C452,514 452,524 456,536 L504,536 C508,524 508,514 505,502 Z"/>
+  <path d="M455,502 L504,536 M505,502 L456,536 M480,502 L455,519 M480,502 L505,519 M455,519 L480,536 M505,519 L480,536"/>
+  <path d="M90,584 Q120,574 150,584 T210,584 T270,584 T330,584 T390,584 T450,584 T510,584 T570,584 T630,584 T690,584 T750,584 T810,584 T870,584"/>
+  <path d="M220,602 Q250,592 280,602 T340,602 T400,602 T460,602 T520,602 T580,602 T640,602 T700,602"/>
+</g>
+
+<!-- Stationen (Hover: Label) -->
+<g class="mk-grp"><title>Hafen</title><circle cx="480" cy="557" r="13" fill="transparent"/><circle class="mk-halo" cx="480" cy="557" r="72"/><g class="mk-disc"><circle class="mk-disc-fill" cx="480" cy="557" r="7.00"/><circle class="mk-ring" cx="480" cy="557" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="480" cy="557" r="6.50"/></g><text class="mk-lbl" x="480" y="581" text-anchor="middle">Hafen</text>
+<g class="mk-star">
+  <line class="mk-spoke" x1="480" y1="557" x2="428" y2="557" style="transform-origin:480px 557px"/>
+  <a class="mk-sat-a" xlink:href="Schiffe_Navigation/" href="Schiffe_Navigation/" target="_top"><g class="mk-sat" style="transform-origin:480px 557px"><title>Schiffe &amp; Navigation</title><circle cx="428" cy="557" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="428" cy="557" r="7.00"/><circle class="mk-ring" cx="428" cy="557" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="428" cy="557" r="6.50"/></g><text class="mk-sat-lbl" x="412" y="561" text-anchor="end">Schiffe &amp; Navigation</text></g></a>
+  <line class="mk-spoke" x1="480" y1="557" x2="532" y2="557" style="transform-origin:480px 557px"/>
+  <a class="mk-sat-a" xlink:href="Handel_Raubzuege/" href="Handel_Raubzuege/" target="_top"><g class="mk-sat" style="transform-origin:480px 557px"><title>Handel &amp; Raubzüge</title><circle cx="532" cy="557" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="532" cy="557" r="7.00"/><circle class="mk-ring" cx="532" cy="557" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="532" cy="557" r="6.50"/></g><text class="mk-sat-lbl" x="548" y="561" text-anchor="start">Handel &amp; Raubzüge</text></g></a>
+</g>
+</g>
+<g class="mk-grp"><title>Eingang</title><circle cx="480" cy="438" r="13" fill="transparent"/><circle class="mk-halo" cx="480" cy="438" r="72"/><g class="mk-disc"><circle class="mk-disc-fill" cx="480" cy="438" r="7.00"/><circle class="mk-ring" cx="480" cy="438" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="480" cy="438" r="6.50"/></g><text class="mk-lbl" x="480" y="424" text-anchor="middle">Eingang</text>
+<g class="mk-star">
+  <line class="mk-spoke" x1="480" y1="438" x2="428" y2="438" style="transform-origin:480px 438px"/>
+  <a class="mk-sat-a" xlink:href="Runensteine/" href="Runensteine/" target="_top"><g class="mk-sat" style="transform-origin:480px 438px"><title>Runensteine &amp; Bildsteine</title><circle cx="428" cy="438" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="428" cy="438" r="7.00"/><circle class="mk-ring" cx="428" cy="438" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="428" cy="438" r="6.50"/></g><text class="mk-sat-lbl" x="412" y="442" text-anchor="end">Runensteine &amp; Bildsteine</text></g></a>
+  <line class="mk-spoke" x1="480" y1="438" x2="532" y2="438" style="transform-origin:480px 438px"/>
+  <a class="mk-sat-a" xlink:href="Skandinavische_Voelker/" href="Skandinavische_Voelker/" target="_top"><g class="mk-sat" style="transform-origin:480px 438px"><title>Die skandinavischen Völker</title><circle cx="532" cy="438" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="532" cy="438" r="7.00"/><circle class="mk-ring" cx="532" cy="438" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="532" cy="438" r="6.50"/></g><text class="mk-sat-lbl" x="548" y="442" text-anchor="start">Die skandinavischen Völker</text></g></a>
+</g>
+</g>
+<g class="mk-grp"><title>Museumszelt</title><circle cx="310" cy="368" r="13" fill="transparent"/><circle class="mk-halo" cx="310" cy="368" r="72"/><g class="mk-disc"><circle class="mk-disc-fill" cx="310" cy="368" r="7.00"/><circle class="mk-ring" cx="310" cy="368" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="310" cy="368" r="6.50"/></g><text class="mk-lbl" x="324" y="372" text-anchor="start">Museumszelt</text>
+<g class="mk-star">
+  <line class="mk-spoke" x1="310" y1="368" x2="273" y2="331" style="transform-origin:310px 368px"/>
+  <a class="mk-sat-a" xlink:href="Kleidung_Schmuck/" href="Kleidung_Schmuck/" target="_top"><g class="mk-sat" style="transform-origin:310px 368px"><title>Kleidung &amp; Schmuck</title><circle cx="273" cy="331" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="273" cy="331" r="7.00"/><circle class="mk-ring" cx="273" cy="331" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="273" cy="331" r="6.50"/></g><text class="mk-sat-lbl" x="257" y="335" text-anchor="end">Kleidung &amp; Schmuck</text></g></a>
+  <line class="mk-spoke" x1="310" y1="368" x2="273" y2="405" style="transform-origin:310px 368px"/>
+  <a class="mk-sat-a" xlink:href="Handel_Raubzuege/" href="Handel_Raubzuege/" target="_top"><g class="mk-sat" style="transform-origin:310px 368px"><title>Handel &amp; Raubzüge</title><circle cx="273" cy="405" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="273" cy="405" r="7.00"/><circle class="mk-ring" cx="273" cy="405" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="273" cy="405" r="6.50"/></g><text class="mk-sat-lbl" x="257" y="409" text-anchor="end">Handel &amp; Raubzüge</text></g></a>
+  <line class="mk-spoke" x1="310" y1="368" x2="347" y2="405" style="transform-origin:310px 368px"/>
+  <a class="mk-sat-a" xlink:href="Alltagsgegenstaende_Hausrat/" href="Alltagsgegenstaende_Hausrat/" target="_top"><g class="mk-sat" style="transform-origin:310px 368px"><title>Alltagsgegenstände &amp; Hausrat</title><circle cx="347" cy="405" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="347" cy="405" r="7.00"/><circle class="mk-ring" cx="347" cy="405" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="347" cy="405" r="6.50"/></g><text class="mk-sat-lbl" x="363" y="409" text-anchor="start">Alltagsgegenstände &amp; Hausrat</text></g></a>
+  <line class="mk-spoke" x1="310" y1="368" x2="347" y2="331" style="transform-origin:310px 368px"/>
+  <a class="mk-sat-a" xlink:href="Koerperpflege_Hygiene/" href="Koerperpflege_Hygiene/" target="_top"><g class="mk-sat" style="transform-origin:310px 368px"><title>Körperpflege &amp; Hygiene</title><circle cx="347" cy="331" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="347" cy="331" r="7.00"/><circle class="mk-ring" cx="347" cy="331" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="347" cy="331" r="6.50"/></g><text class="mk-sat-lbl" x="363" y="335" text-anchor="start">Körperpflege &amp; Hygiene</text></g></a>
+</g>
+</g>
+<g class="mk-grp"><title>Kleines Zelt &amp; Küche</title><circle cx="305" cy="222" r="13" fill="transparent"/><circle class="mk-halo" cx="305" cy="222" r="72"/><g class="mk-disc"><circle class="mk-disc-fill" cx="305" cy="222" r="7.00"/><circle class="mk-ring" cx="305" cy="222" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="305" cy="222" r="6.50"/></g><text class="mk-lbl" x="319" y="226" text-anchor="start">Kleines Zelt &amp; Küche</text>
+<g class="mk-star">
+  <line class="mk-spoke" x1="305" y1="222" x2="350" y2="248" style="transform-origin:305px 222px"/>
+  <a class="mk-sat-a" xlink:href="Kochen_Nahrung/" href="Kochen_Nahrung/" target="_top"><g class="mk-sat" style="transform-origin:305px 222px"><title>Kochen &amp; Nahrung</title><circle cx="350" cy="248" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="350" cy="248" r="7.00"/><circle class="mk-ring" cx="350" cy="248" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="350" cy="248" r="6.50"/></g><text class="mk-sat-lbl" x="366" y="252" text-anchor="start">Kochen &amp; Nahrung</text></g></a>
+  <line class="mk-spoke" x1="305" y1="222" x2="260" y2="248" style="transform-origin:305px 222px"/>
+  <a class="mk-sat-a" xlink:href="Koerperpflege_Hygiene/" href="Koerperpflege_Hygiene/" target="_top"><g class="mk-sat" style="transform-origin:305px 222px"><title>Körperpflege &amp; Hygiene</title><circle cx="260" cy="248" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="260" cy="248" r="7.00"/><circle class="mk-ring" cx="260" cy="248" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="260" cy="248" r="6.50"/></g><text class="mk-sat-lbl" x="244" y="252" text-anchor="end">Körperpflege &amp; Hygiene</text></g></a>
+  <line class="mk-spoke" x1="305" y1="222" x2="305" y2="170" style="transform-origin:305px 222px"/>
+  <a class="mk-sat-a" xlink:href="Kleidung_Schmuck/" href="Kleidung_Schmuck/" target="_top"><g class="mk-sat" style="transform-origin:305px 222px"><title>Kleidung &amp; Schmuck</title><circle cx="305" cy="170" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="305" cy="170" r="7.00"/><circle class="mk-ring" cx="305" cy="170" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="305" cy="170" r="6.50"/></g><text class="mk-sat-lbl" x="305" y="156" text-anchor="middle">Kleidung &amp; Schmuck</text></g></a>
+</g>
+</g>
+<g class="mk-grp"><title>Schlafzelt</title><circle cx="480" cy="130" r="13" fill="transparent"/><circle class="mk-halo" cx="480" cy="130" r="72"/><g class="mk-disc"><circle class="mk-disc-fill" cx="480" cy="130" r="7.00"/><circle class="mk-ring" cx="480" cy="130" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="480" cy="130" r="6.50"/></g><text class="mk-lbl" x="494" y="134" text-anchor="start">Schlafzelt</text>
+<g class="mk-star">
+  <line class="mk-spoke" x1="480" y1="130" x2="435" y2="104" style="transform-origin:480px 130px"/>
+  <a class="mk-sat-a" xlink:href="Wohnen_Lager_Schlafkammer/" href="Wohnen_Lager_Schlafkammer/" target="_top"><g class="mk-sat" style="transform-origin:480px 130px"><title>Wohnen, Lager &amp; Schlafkammer</title><circle cx="435" cy="104" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="435" cy="104" r="7.00"/><circle class="mk-ring" cx="435" cy="104" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="435" cy="104" r="6.50"/></g><text class="mk-sat-lbl" x="419" y="108" text-anchor="end">Wohnen, Lager &amp; Schlafkammer</text></g></a>
+  <line class="mk-spoke" x1="480" y1="130" x2="480" y2="182" style="transform-origin:480px 130px"/>
+  <a class="mk-sat-a" xlink:href="Alltagsgegenstaende_Hausrat/" href="Alltagsgegenstaende_Hausrat/" target="_top"><g class="mk-sat" style="transform-origin:480px 130px"><title>Alltagsgegenstände &amp; Hausrat</title><circle cx="480" cy="182" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="480" cy="182" r="7.00"/><circle class="mk-ring" cx="480" cy="182" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="480" cy="182" r="6.50"/></g><text class="mk-sat-lbl" x="480" y="204" text-anchor="middle">Alltagsgegenstände &amp; Hausrat</text></g></a>
+  <line class="mk-spoke" x1="480" y1="130" x2="525" y2="104" style="transform-origin:480px 130px"/>
+  <a class="mk-sat-a" xlink:href="Kleidung_Schmuck/" href="Kleidung_Schmuck/" target="_top"><g class="mk-sat" style="transform-origin:480px 130px"><title>Kleidung &amp; Schmuck</title><circle cx="525" cy="104" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="525" cy="104" r="7.00"/><circle class="mk-ring" cx="525" cy="104" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="525" cy="104" r="6.50"/></g><text class="mk-sat-lbl" x="541" y="108" text-anchor="start">Kleidung &amp; Schmuck</text></g></a>
+</g>
+</g>
+<g class="mk-grp"><title>Rüstungsständer</title><circle cx="680" cy="215" r="13" fill="transparent"/><circle class="mk-halo" cx="680" cy="215" r="72"/><g class="mk-disc"><circle class="mk-disc-fill" cx="680" cy="215" r="7.00"/><circle class="mk-ring" cx="680" cy="215" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="680" cy="215" r="6.50"/></g><text class="mk-lbl" x="664" y="219" text-anchor="end">Rüstungsständer</text>
+<g class="mk-star">
+  <line class="mk-spoke" x1="680" y1="215" x2="635" y2="189" style="transform-origin:680px 215px"/>
+  <a class="mk-sat-a" xlink:href="Kochen_Nahrung/" href="Kochen_Nahrung/" target="_top"><g class="mk-sat" style="transform-origin:680px 215px"><title>Kochen &amp; Nahrung</title><circle cx="635" cy="189" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="635" cy="189" r="7.00"/><circle class="mk-ring" cx="635" cy="189" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="635" cy="189" r="6.50"/></g><text class="mk-sat-lbl" x="619" y="193" text-anchor="end">Kochen &amp; Nahrung</text></g></a>
+  <line class="mk-spoke" x1="680" y1="215" x2="680" y2="267" style="transform-origin:680px 215px"/>
+  <a class="mk-sat-a" xlink:href="Handel_Raubzuege/" href="Handel_Raubzuege/" target="_top"><g class="mk-sat" style="transform-origin:680px 215px"><title>Handel &amp; Raubzüge</title><circle cx="680" cy="267" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="680" cy="267" r="7.00"/><circle class="mk-ring" cx="680" cy="267" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="680" cy="267" r="6.50"/></g><text class="mk-sat-lbl" x="680" y="289" text-anchor="middle">Handel &amp; Raubzüge</text></g></a>
+  <line class="mk-spoke" x1="680" y1="215" x2="725" y2="189" style="transform-origin:680px 215px"/>
+  <a class="mk-sat-a" xlink:href="Handwerk_Metall_Waffen/" href="Handwerk_Metall_Waffen/" target="_top"><g class="mk-sat" style="transform-origin:680px 215px"><title>Handwerk, Metall &amp; Waffen</title><circle cx="725" cy="189" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="725" cy="189" r="7.00"/><circle class="mk-ring" cx="725" cy="189" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="725" cy="189" r="6.50"/></g><text class="mk-sat-lbl" x="741" y="193" text-anchor="start">Handwerk, Metall &amp; Waffen</text></g></a>
+</g>
+</g>
+<g class="mk-grp"><title>Schlafzelt</title><circle cx="740" cy="310" r="13" fill="transparent"/><circle class="mk-halo" cx="740" cy="310" r="72"/><g class="mk-disc"><circle class="mk-disc-fill" cx="740" cy="310" r="7.00"/><circle class="mk-ring" cx="740" cy="310" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="740" cy="310" r="6.50"/></g><text class="mk-lbl" x="754" y="314" text-anchor="start">Schlafzelt</text>
+<g class="mk-star">
+  <line class="mk-spoke" x1="740" y1="310" x2="695" y2="284" style="transform-origin:740px 310px"/>
+  <a class="mk-sat-a" xlink:href="Alltagsgegenstaende_Hausrat/" href="Alltagsgegenstaende_Hausrat/" target="_top"><g class="mk-sat" style="transform-origin:740px 310px"><title>Alltagsgegenstände &amp; Hausrat</title><circle cx="695" cy="284" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="695" cy="284" r="7.00"/><circle class="mk-ring" cx="695" cy="284" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="695" cy="284" r="6.50"/></g><text class="mk-sat-lbl" x="679" y="288" text-anchor="end">Alltagsgegenstände &amp; Hausrat</text></g></a>
+  <line class="mk-spoke" x1="740" y1="310" x2="740" y2="362" style="transform-origin:740px 310px"/>
+  <a class="mk-sat-a" xlink:href="Wohnen_Lager_Schlafkammer/" href="Wohnen_Lager_Schlafkammer/" target="_top"><g class="mk-sat" style="transform-origin:740px 310px"><title>Wohnen, Lager &amp; Schlafkammer</title><circle cx="740" cy="362" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="740" cy="362" r="7.00"/><circle class="mk-ring" cx="740" cy="362" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="740" cy="362" r="6.50"/></g><text class="mk-sat-lbl" x="740" y="384" text-anchor="middle">Wohnen, Lager &amp; Schlafkammer</text></g></a>
+  <line class="mk-spoke" x1="740" y1="310" x2="785" y2="284" style="transform-origin:740px 310px"/>
+  <a class="mk-sat-a" xlink:href="Kleidung_Schmuck/" href="Kleidung_Schmuck/" target="_top"><g class="mk-sat" style="transform-origin:740px 310px"><title>Kleidung &amp; Schmuck</title><circle cx="785" cy="284" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="785" cy="284" r="7.00"/><circle class="mk-ring" cx="785" cy="284" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="785" cy="284" r="6.50"/></g><text class="mk-sat-lbl" x="801" y="288" text-anchor="start">Kleidung &amp; Schmuck</text></g></a>
+</g>
+</g>
+<g class="mk-grp"><title>Baldachin – Lebensbereich</title><circle cx="480" cy="330" r="13" fill="transparent"/><circle class="mk-halo" cx="480" cy="330" r="72"/><g class="mk-disc"><circle class="mk-disc-fill" cx="480" cy="330" r="7.00"/><circle class="mk-ring" cx="480" cy="330" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="480" cy="330" r="6.50"/></g><text class="mk-lbl" x="494" y="334" text-anchor="start">Baldachin – Lebensbereich</text>
+<g class="mk-star">
+  <line class="mk-spoke" x1="480" y1="330" x2="435" y2="304" style="transform-origin:480px 330px"/>
+  <a class="mk-sat-a" xlink:href="Wohnen_Lager_Schlafkammer/" href="Wohnen_Lager_Schlafkammer/" target="_top"><g class="mk-sat" style="transform-origin:480px 330px"><title>Wohnen, Lager &amp; Schlafkammer</title><circle cx="435" cy="304" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="435" cy="304" r="7.00"/><circle class="mk-ring" cx="435" cy="304" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="435" cy="304" r="6.50"/></g><text class="mk-sat-lbl" x="419" y="308" text-anchor="end">Wohnen, Lager &amp; Schlafkammer</text></g></a>
+  <line class="mk-spoke" x1="480" y1="330" x2="480" y2="382" style="transform-origin:480px 330px"/>
+  <a class="mk-sat-a" xlink:href="Kochen_Nahrung/" href="Kochen_Nahrung/" target="_top"><g class="mk-sat" style="transform-origin:480px 330px"><title>Kochen &amp; Nahrung</title><circle cx="480" cy="382" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="480" cy="382" r="7.00"/><circle class="mk-ring" cx="480" cy="382" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="480" cy="382" r="6.50"/></g><text class="mk-sat-lbl" x="480" y="404" text-anchor="middle">Kochen &amp; Nahrung</text></g></a>
+  <line class="mk-spoke" x1="480" y1="330" x2="525" y2="304" style="transform-origin:480px 330px"/>
+  <a class="mk-sat-a" xlink:href="Gesellschaft_Recht_Alltag/" href="Gesellschaft_Recht_Alltag/" target="_top"><g class="mk-sat" style="transform-origin:480px 330px"><title>Gesellschaft, Recht &amp; Alltag</title><circle cx="525" cy="304" r="13" fill="transparent"/><g class="mk-disc"><circle class="mk-disc-fill" cx="525" cy="304" r="7.00"/><circle class="mk-ring" cx="525" cy="304" r="6.75"/></g><g class="mk"><circle class="mk-core" cx="525" cy="304" r="6.50"/></g><text class="mk-sat-lbl" x="541" y="308" text-anchor="start">Gesellschaft, Recht &amp; Alltag</text></g></a>
+</g>
+</g>
+</svg>

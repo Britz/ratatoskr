@@ -175,12 +175,16 @@ body[data-md-color-scheme] .md-content__button {
    (#rt-nav-toggle / #rt-toc-toggle); der Eck-Knopf ist ihr <label>. Sichtbarkeit
    über html:has(:checked). Default (unchecked) = natürlicher Zustand der Breite.
 
-   Spalten- vs. Overlay-Regime über die BESTEHENDEN Material-Breakpoints, so dass
-   beim Verkleinern ZUERST rechts, dann links die Spalte verlässt:
-     • Nav (links):  Spalte >= 60em,     Overlay < 60em
-     • TOC (rechts): Spalte >= 76.25em,  Overlay < 76.25em
-   Breit: Knopf blendet die Spalte aus (Inhalt rückt nach). Schmal: Knopf öffnet
-   die Liste als Overlay ÜBER dem Text — optisch/inhaltlich identisch zur Spalte. */
+   Der Spalten- vs. Hover-MODUS hängt für BEIDE Seiten an derselben Grenze —
+   bedient verhalten sich links und rechts damit bei jeder Breite identisch:
+     • Spalte (im Fluss, Text rückt): >= 60em
+     • Hover-Overlay (über dem Text): <  60em
+   Nur die DEFAULT-Sichtbarkeit ist gestaffelt (Material-Breakpoints): Nav ab
+   60em sichtbar, TOC erst ab 76.25em — beim Resize hat links also Vorrang
+   (klappt beim Vergrößern zuerst aus, verschwindet beim Verkleinern zuletzt).
+   Knopf = Gegenteil des Defaults: blendet die Spalte aus bzw. ein (Inhalt
+   rückt nach); unter 60em öffnet er die Liste als Overlay ÜBER dem Text —
+   optisch/inhaltlich identisch zur Spalte. */
 
 /* Versteckte, aber per Tastatur fokussierbare Schalter */
 .rt-toggle-state {
@@ -189,18 +193,20 @@ body[data-md-color-scheme] .md-content__button {
   clip: rect(0 0 0 0); clip-path: inset(50%); overflow: hidden;
 }
 
-/* Eck-Knöpfe (Labels): immer sichtbar, fix in den Ecken */
+/* Eck-Knöpfe (Labels): immer sichtbar, folgen dem Scrollen wie der Sidebar-
+   Inhalt (fix unter dem mitwandernden Header) — in beiden Zuständen; damit
+   sie eingeklappt nie über dem Text hängen, bekommt der Inhalt seitlich
+   --rt-content-edge Luft (siehe unten). */
 .rt-toolbar { display: contents; }
 .rt-toggle {
-  position: absolute;
-  top: var(--rt-hh-full);   /* an Content-Oberkante verankert: scrollt mit dem Inhalt
-                               nach oben und verschwindet unter dem (fixen) Header */
+  position: fixed;
+  top: var(--rt-header-h);
   z-index: 7;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: var(--rt-toggle-size);
+  height: var(--rt-toggle-size);
   padding: 0.15rem;
   color: var(--md-default-fg-color--light);
   opacity: 0.5;
@@ -209,8 +215,24 @@ body[data-md-color-scheme] .md-content__button {
 }
 .rt-toggle svg { width: 1.05rem; height: 1.05rem; fill: currentColor; }
 .rt-toggle:hover { color: var(--md-accent-fg-color); opacity: 1; }
-.rt-toggle--nav { left: 0.3rem; }
-.rt-toggle--toc { right: 0.3rem; }
+/* Offene Sidebar: Knopf ankert an der Inhalts-Oberkante (anchor-name unten) —
+   wird der Inhalt am Track-Ende (Footer) hochgeschoben, schiebt er den Knopf
+   mit. Geschlossen existiert kein gerenderter Anker -> Fallback = Header-
+   Unterkante, der Knopf bleibt im Bild. (Browser ohne anchor() verwerfen die
+   Deklaration -> top aus .rt-toggle: Knopf löst sich dann am Footer lediglich
+   vom Inhalt.) */
+.rt-toggle--nav {
+  left: 0.3rem;
+  position-anchor: --rt-nav-inhalt;   /* Default-Anker: nur der bekommt Scroll-Kompensation */
+  top: calc(anchor(top, calc(var(--rt-header-h) + var(--rt-sidebar-gap))) - var(--rt-sidebar-gap));
+}
+.rt-toggle--toc {
+  right: 0.3rem;
+  position-anchor: --rt-toc-inhalt;
+  top: calc(anchor(top, calc(var(--rt-header-h) + var(--rt-sidebar-gap))) - var(--rt-sidebar-gap));
+}
+.md-sidebar--primary .md-sidebar__scrollwrap { anchor-name: --rt-nav-inhalt; }
+.md-sidebar--secondary .md-sidebar__scrollwrap { anchor-name: --rt-toc-inhalt; }
 .rt-toggle--toc svg { transform: scaleX(-1); }   /* gespiegeltes Listen-Icon (rechts) */
 /* Tastatur-Fokus sichtbar am zugehörigen Label */
 #rt-nav-toggle:focus-visible ~ .rt-toggle--nav,
@@ -226,51 +248,113 @@ body:has(.rt-titelbild) .rt-toolbar { display: none; }
 body:has(.md-sidebar--primary[data-md-type="navigation"][hidden]) .rt-toggle--nav { display: none; }
 body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
 
-/* ── Breit: Spalte per Knopf ausblenden (Inhalt rückt nach) ──────────────────── */
+/* ── Breit: Spalte per Knopf ausblenden (Inhalt rückt nach) ────────────────────
+   Materials 1.2rem-Rand zur Spalte hängt am [hidden]-Attribut; unser Ausblenden
+   läuft über display:none — daher den Rand explizit auf --rt-content-edge
+   zurücksetzen, sonst rückt der Text unter den Eck-Knopf. */
 @media screen and (min-width: 60em) {            /* Nav ist hier Spalte */
   html:has(#rt-nav-toggle:checked) .md-sidebar--primary:not([hidden]) { display: none; }
+  html:has(#rt-nav-toggle:checked) [dir=ltr] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner { margin-left: var(--rt-content-edge); }
+  html:has(#rt-nav-toggle:checked) [dir=rtl] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner { margin-right: var(--rt-content-edge); }
 }
 @media screen and (min-width: 76.25em) {         /* TOC ist hier Spalte */
   html:has(#rt-toc-toggle:checked) .md-sidebar--secondary:not([hidden]) { display: none; }
+  html:has(#rt-toc-toggle:checked) [dir=ltr] .md-sidebar--secondary:not([hidden]) ~ .md-content > .md-content__inner { margin-right: var(--rt-content-edge); }
+  html:has(#rt-toc-toggle:checked) [dir=rtl] .md-sidebar--secondary:not([hidden]) ~ .md-content > .md-content__inner { margin-left: var(--rt-content-edge); }
 }
 
 /* (Sidebars werden in main.html ohne data-md-component="sidebar" gerendert, daher
    fasst Materials Sidebar-JS sie nicht an — keine berechnete Inline-Höhe/-top, kein
    Sprung am 960er-Breakpoint. Höhe = Inhalt, rein per CSS.) */
 
+/* ═══ Sidebars: EIN Verhalten und Aussehen für ALLE Breiten ═══════════════════
+   Materials breitenabhängige Sidebar-Regeln (Drawer, sticky-Spalte, height:0,
+   Transforms) werden hier KOMPLETT überschrieben. Es gibt genau eine Geometrie:
+
+   TRACK (.md-sidebar) — steht IM FLUSS (Flex-Kind von .md-main__inner),
+   gestreckt über die volle Höhe zwischen Header-Unterkante und Footer
+   (margin-top gleicht den .md-main__inner-Margin aus). Eine lange Liste
+   verlängert den Hauptbereich, der Footer bleibt unter dem Track-Ende.
+   padding-top = --rt-sidebar-gap reserviert den Platz für den Knopf: die
+   Ruhelage des Inhalts liegt so EXAKT auf dem Sticky-Schwellwert — nichts
+   verschiebt sich bei Scroll 0, egal wie lang die Liste ist.
+
+   INHALT (.md-sidebar__scrollwrap) — klebt per sticky unter dem
+   (mitwandernden) Header, wandert beim Scrollen im Track mit und bleibt
+   stehen, sobald er am Track-Ende (Footer) unten anstößt. Überall identisch.
+
+   Der EINZIGE Modus-Unterschied ist die BOX (siehe Overlay-Block unten):
+   Spalte = transparent, im Fluss neben dem Text; Overlay = Pergament +
+   Schatten, per negativem Rand 0 Breite im Fluss -> schwebt ÜBER dem Text. */
+:root { --rt-sidebar-gap: calc(var(--rt-toggle-size) + 0.4rem); }
+.md-sidebar:not([hidden]) {
+  position: static;
+  align-self: stretch;
+  width: var(--rt-sidebar-w);
+  flex-shrink: 0;
+  height: auto;
+  margin: -1.5rem 0 0;
+  padding: var(--rt-sidebar-gap) 0 1.2rem;
+  transform: none;
+  background: transparent;
+  box-shadow: none;
+  z-index: auto;
+}
+.md-sidebar--secondary:not([hidden]) { order: 2; }   /* rechts vom Inhalt, bei jeder Breite */
+.md-sidebar:not([hidden]) .md-sidebar__scrollwrap {
+  position: sticky;
+  inset: auto;
+  top: calc(var(--rt-header-h) + var(--rt-sidebar-gap));
+  height: auto;
+  margin: 0 0.2rem;
+  overflow: visible;
+}
+
 /* ── Linke Liste: IMMER Desktop-Spalten-Rendering (nie Material-Drawer) ───────── */
 @media screen and (max-width: 76.234375em) {
-  /* Container/Nav statt absolut/voll-hoch. Rand um die Liste wie die
-     Desktop-Spalte (scrollwrap-Margin .2rem; Material setzt darunter margin:0 und
-     macht so das breitenabhängige inner-padding größer → Abstände driften).
-     overflow-y:auto (nicht visible): als Spalte (60–76.25em, feste Höhe) scrollt
-     der Inhalt INTERN statt unerreichbar unten herauszuragen; im Overlay (<60em)
-     hat der scrollwrap keine feste Höhe → er scrollt nicht selbst, dort ist die
-     Sidebar der Scroller. */
-  .md-sidebar--primary .md-sidebar__scrollwrap { position: relative; inset: auto; overflow-y: auto; margin: 0 0.2rem; }
+  /* (Scrollwrap-Geometrie kommt aus der globalen Track/Inhalt-Regel oben.)
+     Dieser Block spiegelt Materials >=76.25em-Desktop-Regeln 1:1 nach unten
+     und setzt Materials Drawer-Regeln zurück — die Nav rendert dadurch bei
+     JEDER Breite exakt wie die Desktop-Spalte. */
   [dir=ltr] .md-sidebar--primary .md-sidebar__inner { padding-right: 0.2rem; }
   [dir=rtl] .md-sidebar--primary .md-sidebar__inner { padding-left: 0.2rem; }
   .md-nav--primary,
-  .md-nav--primary .md-nav { position: static; height: auto; background-color: transparent; }
-  .md-nav--primary .md-nav__item { border-top: 0; }
-  .md-nav--primary .md-nav__title ~ .md-nav__list { box-shadow: none; }   /* Drawer-Trennlinie weg */
-  /* Material rendert die linke Liste hier als mobilen Drawer (größere Schrift,
-     Touch-Padding, Pane-Titel, kein Einzug). Auf die Desktop-Spalte zurückführen:
-     Typografie/Abstände/Einzug = die sonst auf >=76.25em gegateten Werte. */
-  .md-nav--primary .md-nav__item { font-size: 0.7rem; line-height: 1.3; }
+  .md-nav--primary .md-nav {
+    position: static;
+    display: block;
+    height: auto;
+    background-color: transparent;
+    transform: none;
+  }
+  .md-nav { margin-bottom: -0.4rem; }
+  .md-nav--primary .md-nav__list { background-color: transparent; }
+  .md-nav--primary .md-nav__title ~ .md-nav__list {
+    background-color: transparent;
+    box-shadow: none;                  /* Drawer-Trennlinie weg */
+    overflow-y: visible;
+    scroll-snap-type: none;
+  }
+  .md-nav--primary .md-nav__item { border-top: 0; font-size: 0.7rem; line-height: 1.3; }
   .md-nav--primary .md-nav__link { margin-top: 0.625em; padding: 0; }
+  .md-nav--primary .md-nav__container > .md-nav__link { margin-top: 0; }
   [dir=ltr] .md-nav--primary .md-nav__item > .md-nav__link { margin-right: 0.4rem; }
+  [dir=rtl] .md-nav--primary .md-nav__item > .md-nav__link { margin-left: 0.4rem; }
   [dir=ltr] .md-nav--primary .md-nav__list { padding-left: 0.6rem; }
+  [dir=rtl] .md-nav--primary .md-nav__list { padding-right: 0.6rem; }
   .md-nav--primary .md-nav__list { padding-bottom: 0.4rem; }
   [dir=ltr] .md-nav--primary .md-nav__item--section > .md-nav { margin-left: -0.6rem; }
-  /* Section-Margins/Item-Padding wie die Desktop-Spalte (sonst >=76.25em-gegatet) */
-  .md-nav__item--section { margin: 1.25em 0; }
+  [dir=rtl] .md-nav--primary .md-nav__item--section > .md-nav { margin-right: -0.6rem; }
+  /* Abschnitte wie die Desktop-Spalte */
+  .md-nav__item--section { display: block; margin: 1.25em 0; }
   .md-nav__item--section:last-child { margin-bottom: 0; }
-  .md-nav--lifted > .md-nav__list > .md-nav__item--active.md-nav__item--section { margin: 0; }
+  .md-nav__item--section > .md-nav__link { font-weight: 700; }
+  .md-nav__item--section > .md-nav__link[for] { color: var(--md-default-fg-color--light); }
+  .md-nav__item--section > .md-nav__link:not(.md-nav__container) { pointer-events: none; }
+  .md-nav__item--section > .md-nav__link .md-icon,
+  .md-nav__item--section > .md-nav__link > [for] { display: none; }
   .md-nav__item--section > .md-nav > .md-nav__list > .md-nav__item { padding: 0; }
-  /* Aufklapp-Icons rund und .9rem inline statt mobiler 1.2rem-Absolut-Pfeile.
-     Selektor-Spezifität = Materials mobile Regel (.md-nav--primary .md-nav__link
-     .md-nav__icon), damit der spätere Override sie schlägt. */
+  /* Aufklapp-Icons: Desktop-Inline-Pfeile statt mobiler 1.2rem-Absolut-Pfeile.
+     Spezifität >= Materials Mobile-Regeln (inkl. [dir]-Varianten). */
   .md-nav--primary .md-nav__link .md-nav__icon {
     position: static;
     top: auto;
@@ -279,33 +363,64 @@ body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
     width: 0.9rem;
     height: 0.9rem;
     margin: 0;
-    font-size: 0.9rem;
+    font-size: inherit;
     border-radius: 100%;
   }
+  [dir=ltr] .md-nav--primary .md-nav__link .md-nav__icon { margin-right: 0; }
+  [dir=rtl] .md-nav--primary .md-nav__link .md-nav__icon { margin-left: 0; }
   .md-nav--primary .md-nav__link .md-nav__icon::after {
     display: inline-block;
     vertical-align: -0.1rem;
     border-radius: 100%;
   }
-  /* Kein Aufklapp-Pfeil an der Abschnitts-Überschrift (Kinder sind ohnehin offen) */
-  .md-nav__item--section > .md-nav__link .md-icon { display: none; }
   /* Aktiv-Pfad-Labels (Abschnitt der aktuellen Seite) nicht lila: Material färbt
      mobil den ganzen Pfad, Desktop nur den echten Aktiv-Link */
   .md-nav--primary .md-nav__item--active > .md-nav__link:not(.md-nav__link--active) {
     color: var(--md-default-fg-color);
   }
-  .md-nav--lifted > .md-nav__list > .md-nav__item--active > label.md-nav__link {
-    color: var(--md-default-fg-color--light); font-weight: 700;
+  /* Nav-Titel wie am Desktop: sichtbare, fette, haftende Abschnitts-Überschrift
+     (Drawer-Header-Optik inkl. Logo/Pfeil-Icon zurückgesetzt) */
+  .md-nav--primary .md-nav__title {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    height: auto;
+    padding: 0 0.6rem;
+    background: var(--md-default-bg-color);
+    box-shadow: 0 0 0.4rem 0.4rem var(--md-default-bg-color);
+    color: var(--md-default-fg-color--light);
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1.3;
+    white-space: normal;
+    cursor: auto;
   }
-  /* Drawer-Pane-Titel entfernen (Desktop-Spalte zeigt keine) */
-  .md-nav--primary .md-nav__title { display: none; }
-  /* navigation.tabs (lifted): nur aktiver Top-Abschnitt */
+  .md-nav--primary .md-nav__title .md-nav__icon,
+  .md-nav--primary .md-nav__title .md-nav__button,
+  .md-nav--primary .md-nav__title .md-logo { display: none; }
+  .md-nav__item--nested > .md-nav > .md-nav__title { display: none; }
+  /* navigation.tabs (lifted): nur aktiver Top-Abschnitt, mit Desktop-Sticky-Kopf */
+  .md-nav--lifted > .md-nav__title,
   .md-nav--lifted > .md-nav__list > .md-nav__item { display: none; }
   .md-nav--lifted > .md-nav__list > .md-nav__item--active { display: block; }
-  /* Unterpunkte als Accordion (wie Desktop), kein Slide-in-Drawer */
+  .md-nav--lifted > .md-nav__list > .md-nav__item--active.md-nav__item--section { margin: 0; }
+  .md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav__link {
+    background: var(--md-default-bg-color);
+    box-shadow: 0 0 0.4rem 0.4rem var(--md-default-bg-color);
+    margin-top: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  .md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav__link:not(.md-nav__container) { pointer-events: none; }
+  .md-nav--lifted > .md-nav__list > .md-nav__item > [for] { color: var(--md-default-fg-color--light); }
+  [dir=ltr] .md-nav--lifted > .md-nav__list > .md-nav__item > .md-nav:not(.md-nav--secondary) { margin-left: -0.6rem; }
+  [dir=rtl] .md-nav--lifted > .md-nav__list > .md-nav__item > .md-nav:not(.md-nav--secondary) { margin-right: -0.6rem; }
+  /* Unterpunkte als Accordion — exakt Materials Desktop-Mechanik */
   .md-nav__toggle ~ .md-nav {
     display: grid;
-    grid-template-rows: minmax(0, 0fr);
+    grid-template-rows: minmax(0.4rem, 0fr);
     opacity: 0;
     visibility: collapse;
     transform: none;
@@ -313,12 +428,22 @@ body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
   }
   .md-nav__toggle:checked ~ .md-nav,
   .md-nav__toggle.md-toggle--indeterminate ~ .md-nav {
-    grid-template-rows: minmax(0, 1fr);
+    grid-template-rows: minmax(0.4rem, 1fr);
     opacity: 1;
     visibility: visible;
+    transform: none;
     transition: grid-template-rows .25s cubic-bezier(.86,0,.07,1), opacity .15s .1s, visibility 0ms;
   }
+  .md-nav__toggle.md-toggle--indeterminate ~ .md-nav { transition: none; }
   .md-nav__toggle ~ .md-nav > .md-nav__list { overflow: hidden; }
+  /* NACH den Accordion-Regeln (Materials Reihenfolge — letzte Regel gewinnt):
+     Abschnitts-Navs sind immer offen und rendern als block */
+  .md-nav__item--section > .md-nav { display: block; opacity: 1; visibility: visible; }
+  .md-nav--lifted .md-nav[data-md-level="1"] {
+    grid-template-rows: minmax(0.4rem, 1fr);
+    opacity: 1;
+    visibility: visible;
+  }
   .md-nav__item--nested .md-nav__toggle:checked ~ .md-nav__link .md-nav__icon::after,
   .md-nav__item--nested .md-toggle--indeterminate ~ .md-nav__link .md-nav__icon::after {
     transform: rotate(90deg);
@@ -331,104 +456,103 @@ body:has(.md-sidebar--secondary[hidden]) .rt-toggle--toc { display: none; }
   .md-nav--primary .md-nav__link[for="__toc"] + a.md-nav__link--active { display: flex; }
 }
 
-/* ── Nav als Spalte zwischen 60–76.25em (statt Material-Drawer) ──────────────── */
-@media screen and (min-width: 60em) and (max-width: 76.234375em) {
-  .md-sidebar--primary:not([hidden]) {
+/* ── TOC-Inhalt unter 60em: Materials >=60em-Regeln gespiegelt (identisches
+   Rendering bei jeder Breite) ─────────────────────────────────────────────── */
+@media screen and (max-width: 59.984375em) {
+  .md-nav--secondary .md-nav__title {
+    background: var(--md-default-bg-color);
+    box-shadow: 0 0 0.4rem 0.4rem var(--md-default-bg-color);
     position: sticky;
-    top: var(--rt-header-h);
-    left: auto;
-    right: auto;
-    transform: none;
-    height: calc(100vh - var(--rt-header-h));
-    z-index: auto;
-    background: transparent;
-    box-shadow: none;
+    top: 0;
+    z-index: 1;
   }
-  .md-sidebar--primary:not([hidden]) .md-sidebar__scrollwrap { height: 100%; }
+  .md-nav--secondary .md-nav__title .md-nav__icon { display: none; }
+  [dir=ltr] .md-nav--secondary .md-nav__list { padding-left: 0.6rem; }
+  [dir=rtl] .md-nav--secondary .md-nav__list { padding-right: 0.6rem; }
+  .md-nav--secondary .md-nav__list { padding-bottom: 0.4rem; }
+  [dir=ltr] .md-nav--secondary .md-nav__item > .md-nav__link { margin-right: 0.4rem; }
+  [dir=rtl] .md-nav--secondary .md-nav__item > .md-nav__link { margin-left: 0.4rem; }
+}
+/* Sidebar-Innenabstand des TOC wie am Desktop (Material gated das auf >=76.25em) */
+@media screen and (max-width: 76.234375em) {
+  [dir=ltr] .md-sidebar--secondary .md-sidebar__inner { padding-right: 0.2rem; }
+  [dir=rtl] .md-sidebar--secondary .md-sidebar__inner { padding-left: 0.2rem; }
+}
+
+/* ── Nav als Spalte zwischen 60–76.25em: Geometrie kommt aus der globalen
+   Track-Regel; hier nur der Spaltenrand zum Text. ─────────────────────────── */
+@media screen and (min-width: 60em) and (max-width: 76.234375em) {
   [dir=ltr] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner { margin-left: 1.2rem; }
 }
 
-/* ── Beide Spalten ab 76.25em: volle Bildschirmhöhe, Inhalt scrollt INTERN ────
-   Ohne Materials Sidebar-JS bleibt es bei height:0 (Default) auf .md-sidebar
-   und einem statischen top-Wert, der nicht zum dynamischen Header passt. Die
-   eigentliche Scrollbox (.md-sidebar__scrollwrap, hat per Material-Default
-   bereits overflow-y:auto) bekommt dadurch nie eine begrenzte Höhe -> eine
-   Liste, die länger ist als der Viewport, ragt unten unerreichbar heraus statt
-   INTERN zu scrollen; eine kürzere füllt die Spalte nicht bis zum Fuß.
-   Lösung wie beim bestehenden Overlay (Nav/TOC < 60/76.25em, siehe unten):
-   Spalte = feste Höhe (Viewport minus Header, wandert mit dessen Minimierung
-   mit), Scrollwrap darin auf 100% -> eigener Scrollbalken bei zu langem Inhalt,
-   sonst füllt die (transparente) Spalte trotzdem immer bis zum Fuß. */
-@media screen and (min-width: 76.25em) {
-  .md-sidebar--primary:not([hidden]),
-  .md-sidebar--secondary:not([hidden]) {
-    top: var(--rt-header-h);
-    height: calc(100vh - var(--rt-header-h));
-  }
-  .md-sidebar--primary:not([hidden]) .md-sidebar__scrollwrap,
-  .md-sidebar--secondary:not([hidden]) .md-sidebar__scrollwrap {
-    height: 100%;
-  }
-}
-
-/* Overlay-Bezug: .md-main ist der Positionierungs-Kontext (position:relative) für
-   die ABSOLUT liegenden Overlays — daran hängen top:0 sowie left:0/right:0 (linke/
-   rechte Kante). Die HÖHE der Overlays kommt NICHT aus diesem Bezug (100%/bottom:0
-   wäre die volle, lange Dokumenthöhe), sondern per calc(100vh - Header) aus dem
-   Viewport (siehe unten). .md-main__inner bleibt static, damit .md-main der Bezug ist. */
+/* (Historisch Positionierungs-Kontext der früher absoluten Overlays; bleibt als
+   stabiler Bezug stehen, schadet nicht.) */
 .md-main { position: relative; }
 
-/* ── Overlay-Höhe (Nav & TOC): Viewport unter dem Header, EIN Scroll-Container ──
-   Höhe = Sichtbereich minus (mitwandernder) Header, NICHT height:100% — 100%
-   bezöge sich auf .md-main (position:relative) und wäre damit die volle, sehr
-   lange Dokumenthöhe; das Overlay ragt dann meterweit unerreichbar nach unten.
-   Der Scroll-Container ist die .md-sidebar selbst (overflow-y:auto, feste Höhe);
-   das innere .md-sidebar__scrollwrap darf daher KEIN eigenes overflow haben
-   (sonst zwei geschachtelte Scrollboxen, von denen die innere nie die volle
-   Höhe bekommt). Für die Nav ist scrollwrap bereits weiter oben auf
-   overflow:visible gesetzt; für das TOC hier ergänzt. */
+/* ── Overlay-MODUS unter 60em: NUR die Box unterscheidet sich von der Spalte —
+   Pergament + Schatten, und der negative Rand in Panelbreite (--rt-sidebar-w)
+   lässt den Track 0 Breite im Fluss belegen -> er schwebt ÜBER dem Text,
+   verlängert aber weiterhin als Flex-Kind den Hauptbereich (Footer bleibt
+   unter dem Track-Ende). Geometrie/Inhalt: globale Track-Regel oben. */
 
 /* ── Nav als Overlay unter 60em (über dem Text) ─────────────────────────────── */
 @media screen and (max-width: 59.984375em) {
   .md-sidebar--primary:not([hidden]) { display: none; }
+  /* keine Spalte -> Materials 1.2rem-Spaltenrand ([hidden]-basiert) neutralisieren */
+  [dir=ltr] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner { margin-left: var(--rt-content-edge); }
+  [dir=rtl] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner { margin-right: var(--rt-content-edge); }
   html:has(#rt-nav-toggle:checked) .md-sidebar--primary:not([hidden]) {
     display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: calc(100vh - var(--rt-header-h));
-    transform: none;
-    overflow-y: auto;
+    margin-right: calc(-1 * var(--rt-sidebar-w));
     z-index: 6;
     background: var(--md-default-bg-color);
     box-shadow: var(--md-shadow-z3);
   }
 }
 
-/* ── TOC als Overlay unter 76.25em (spiegelbildlich) ────────────────────────── */
+/* ── TOC unter 76.25em: Default ausgeblendet ──────────────────────────────── */
 @media screen and (max-width: 76.234375em) {
   .md-sidebar--secondary:not([hidden]) { display: none; }
-  /* scrollwrap ohne eigenes overflow -> die Sidebar ist der einzige Scroller */
-  .md-sidebar--secondary .md-sidebar__scrollwrap { overflow: visible; }
+  /* keine Spalte -> Materials 1.2rem-Spaltenrand ([hidden]-basiert) neutralisieren */
+  [dir=ltr] .md-sidebar--secondary:not([hidden]) ~ .md-content > .md-content__inner { margin-right: var(--rt-content-edge); }
+  [dir=rtl] .md-sidebar--secondary:not([hidden]) ~ .md-content > .md-content__inner { margin-left: var(--rt-content-edge); }
+}
+
+/* ── TOC als Spalte zwischen 60–76.25em: Knopf blendet sie EIN (Text rückt);
+   Geometrie aus der globalen Track-Regel. ─────────────────────────────────── */
+@media screen and (min-width: 60em) and (max-width: 76.234375em) {
+  html:has(#rt-toc-toggle:checked) .md-sidebar--secondary:not([hidden]) { display: block; }
+  html:has(#rt-toc-toggle:checked) [dir=ltr] .md-sidebar--secondary:not([hidden]) ~ .md-content > .md-content__inner { margin-right: 1.2rem; }
+  html:has(#rt-toc-toggle:checked) [dir=rtl] .md-sidebar--secondary:not([hidden]) ~ .md-content > .md-content__inner { margin-left: 1.2rem; }
+}
+
+/* ── TOC als Overlay unter 60em (spiegelbildlich zur Nav) ───────────────────── */
+@media screen and (max-width: 59.984375em) {
   html:has(#rt-toc-toggle:checked) .md-sidebar--secondary:not([hidden]) {
     display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: calc(100vh - var(--rt-header-h));
-    overflow-y: auto;
+    margin-left: calc(-1 * var(--rt-sidebar-w));
     z-index: 6;
     background: var(--md-default-bg-color);
     box-shadow: var(--md-shadow-z3);
-    padding-left: 0.6rem;     /* Innenabstand zum Text (wie der Nav-Einzug); Material
-                                 gated das sonst auf >=60em */
   }
 }
 
 /* Burger bleibt unangetastet, aber funktionslos: Drawer-Abdunklung neutralisieren */
 .md-overlay { display: none; }
 
+/* Seitlicher Mindestabstand Inhalt <-> Seitenrand: groß genug für die Eck-
+   Knöpfe (0.3rem Einzug + 1.5rem Knopf), damit die nie über dem Text hängen.
+   Materials Default (0.8rem) wird ersetzt; die 1.2rem-Abstände zu SICHTBAREN
+   Sidebar-Spalten (höhere Spezifität) bleiben unberührt. */
+.md-content__inner {
+  margin-left: var(--rt-content-edge);
+  margin-right: var(--rt-content-edge);
+}
+
 :root {
+  --rt-toggle-size: 1.5rem;
+  --rt-sidebar-w: 12.1rem;   /* = Materials .md-sidebar-Breite */
+  --rt-content-edge: 2rem;
   --rt-header-rule: color-mix(in oklab, var(--md-accent-fg-color) 22%, transparent);
   /* Header-Flaeche einen Hauch abgesetzt vom Inhalts-Pergament (hebt die Kopfleiste ab) */
   --rt-header-paper: color-mix(in oklab, var(--md-default-bg-color) 93%, var(--md-default-fg-color));
@@ -990,21 +1114,37 @@ body {
    * wirklich zentriert statt links kleben zu lassen. */
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 14rem));
   justify-content: center;
+  align-items: start;
   gap: 0.5rem;
   margin: 1em 0;
 }
 .md-typeset .rt-gallery > p { margin: 0; }
-.md-typeset .rt-gallery a.glightbox,
+/* Kachel = Bild + Bildunterschrift in einer Spalte, damit die Caption unter
+ * dem Bild sitzt und ihre Breite = Bildbreite ist. */
+.md-typeset .rt-gallery a.glightbox {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
 .md-typeset .rt-gallery img {
   display: block;
   width: 100%;
-  height: 100%;
-}
-.md-typeset .rt-gallery img {
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 6px;
   transition: filter .2s ease, transform .2s ease;
+}
+/* Bildunterschrift mittig unter der Kachel; Breite = Bildbreite (Flex-Spalte),
+ * daher bricht langer Text um statt ueber das Bild hinauszuragen. Speist sich
+ * aus demselben ``data-title`` wie die glightbox-Lightbox (auto_caption). */
+.md-typeset .rt-gallery a.glightbox[data-title]:not([data-title=""])::after {
+  content: attr(data-title);
+  display: block;
+  margin-top: 0.35rem;
+  text-align: center;
+  font-size: 0.7rem;
+  line-height: 1.3;
+  color: var(--md-default-fg-color--light);
 }
 .md-typeset .rt-gallery a.glightbox:hover img,
 .md-typeset .rt-gallery a.glightbox:focus-visible img {
