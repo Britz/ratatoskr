@@ -1161,6 +1161,145 @@ body {
   max-width: 760px;
 }
 
+/* ── "Informationen"-Block (Frontmatter der Wissen/-Seiten, site_hooks.py) ─────
+ * Eingeklappte Admonition ``??? info rt-angaben`` mit einer Definitionsliste.
+ * Ziel: kompakt — Label und Wert nebeneinander in zwei Spalten, enge Zeilen,
+ * kein Zellrahmen/-padding wie bei einer Tabelle.
+ * ALLE Regeln hier sind strikt auf .rt-angaben gescopet: normale <dl>/<table>
+ * im Fliesstext und andere Admonitions bleiben unberuehrt. */
+
+/* Farbe: statt Materials cyanfarbenem "info"-Look ein dezentes Grau aus den
+ * vorhandenen Grundtoenen (--md-default-fg-color--light/--lighter/--lightest);
+ * die gelten in HELL und DUNKEL, daher kein Schema-Sonderfall. Nur Rahmen,
+ * Titelflaeche, Icon und Chevron werden umgefaerbt — Geometrie/Verhalten
+ * bleiben Material. Selektoren nennen ``details.rt-angaben`` und schlagen so
+ * Materials ``.info``-Regeln, ohne andere Admonitions zu beruehren. */
+.md-typeset details.rt-angaben {
+  border-color: var(--md-default-fg-color--lighter);
+}
+.md-typeset details.rt-angaben > summary {
+  background-color: var(--md-default-fg-color--lightest);
+}
+.md-typeset details.rt-angaben > summary::before {   /* Typ-Icon */
+  background-color: var(--md-default-fg-color--light);
+}
+.md-typeset details.rt-angaben > summary::after {    /* Auf-/Zuklapp-Chevron */
+  color: var(--md-default-fg-color--light);
+}
+/* Fokus-Ring: Material legt beim Anklicken (``:focus-within``) einen Schimmer
+ * in der Typ-Farbe um den Block (``details.info:focus-within`` -> cyan/gruen).
+ * Sichtbar nur im offenen Zustand, weil ``details:not([open])`` den Schatten
+ * unterdrueckt. Gleiche Geometrie, nur grau statt bunt. */
+.md-typeset details.rt-angaben:focus-within {
+  box-shadow: 0 0 0 0.2rem var(--md-default-fg-color--lightest);
+}
+
+.md-typeset .rt-angaben > dl {
+  display: grid;
+  /* Spalte 1 = max-content, aber gedeckelt (fit-content) -> lange Labels
+   * brechen um, statt die Wertspalte zu erdruecken. */
+  grid-template-columns: fit-content(13rem) 1fr;
+  /* Kein column-gap: die Zeilentrenner (border-top an dt UND dd) sollen ueber
+   * beide Spalten durchlaufen — eine Luecke wuerde die Linie zerschneiden.
+   * Der Spaltenabstand kommt stattdessen als padding-right am dt. Auch kein
+   * row-gap: der vertikale Abstand kommt als padding-block, damit die Linie
+   * mittig zwischen den Zeilen sitzt und nicht klemmt. */
+  column-gap: 0;
+  row-gap: 0;
+  margin: 0;
+}
+.md-typeset .rt-angaben > dl > dt,
+.md-typeset .rt-angaben > dl > dd {
+  margin: 0;
+  padding: 0.25em 0;
+  line-height: 1.45;
+  overflow-wrap: anywhere;   /* lange Werte/URLs brechen in ihrer Spalte um */
+  /* Zeilentrenner: feine horizontale Linie ZWISCHEN den Zeilen (nur "in der
+   * Mitte") — dt und dd derselben Zeile teilen sich dieselbe Linie. Keine
+   * vertikalen Linien. Grauton aus den vorhandenen Tokens -> hell wie dunkel. */
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+}
+/* … keine Linie ueber der ersten und keine unter der letzten Zeile. */
+.md-typeset .rt-angaben > dl > dt:first-of-type,
+.md-typeset .rt-angaben > dl > dd:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+.md-typeset .rt-angaben > dl > dt:last-of-type,
+.md-typeset .rt-angaben > dl > dd:last-of-type {
+  padding-bottom: 0;
+}
+.md-typeset .rt-angaben > dl > dt {
+  grid-column: 1;
+  padding-right: 1em;   /* Spaltenabstand, ohne die Trennlinie zu unterbrechen */
+  font-weight: 400;
+  color: var(--md-default-fg-color--light);
+}
+.md-typeset .rt-angaben > dl > dd {
+  grid-column: 2;
+  color: var(--md-default-fg-color);
+}
+
+/* Schmale Fenster: zweispaltig zerlaeuft -> Label ueber Wert (einspaltig) */
+@media screen and (max-width: 44.9375em) {
+  .md-typeset .rt-angaben > dl {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+  }
+  .md-typeset .rt-angaben > dl > dt,
+  .md-typeset .rt-angaben > dl > dd { grid-column: 1; }
+  /* Einspaltig steht der Wert UNTER seinem Label: dann trennt nur die Linie am
+   * dt die Eintraege; das dd bekommt keine (sonst Linie mitten im Eintrag). */
+  .md-typeset .rt-angaben > dl > dt { padding-right: 0; }
+  .md-typeset .rt-angaben > dl > dd {
+    border-top: 0;
+    padding-top: 0;
+    margin-bottom: 0.4em;
+  }
+  .md-typeset .rt-angaben > dl > dd:last-of-type { margin-bottom: 0; }
+}
+
 @media (max-width: 820px) {
   .md-typeset .rt-teasers { grid-template-columns: 1fr; max-width: 380px; }
+}
+
+/* ── Externe Links: Icon + neuer Tab (Klasse ``rt-extern``, site_hooks.py) ────
+ * Nur Inhalts-Links (``.md-typeset``) — Header/Navigation/Footer bleiben
+ * unberuehrt, auch wenn dort externe Links vorkommen sollten. Das Icon kommt
+ * als ``::after`` per ``mask-image`` (Inline-SVG-Data-URI) statt als Zeichen
+ * (``content: "↗"``), damit es in currentColor mitfaerbt und sauber skaliert. */
+.md-typeset a.rt-extern::after {
+  content: "";
+  display: inline-block;
+  width: 0.7em;
+  height: 0.7em;
+  margin-left: 0.2em;
+  background-color: currentColor;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H520v-80h320v320h-80v-184L388-332Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H520v-80h320v320h-80v-184L388-332Z'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  vertical-align: -0.05em;
+}
+
+/* ── YouTube-Links: Video-Icon vor dem Linktext (Klasse ``rt-youtube``,
+ * site_hooks.py) ──────────────────────────────────────────────────────────
+ * Zusaetzlich zur rt-extern-Kennzeichnung (::after). Gleiches Prinzip:
+ * ``::before`` per ``mask-image`` (Inline-SVG-Data-URI) in currentColor. */
+.md-typeset a.rt-youtube::before {
+  content: "";
+  display: inline-block;
+  width: 0.7em;
+  height: 0.7em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='m380-300 280-180-280-180v360ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='m380-300 280-180-280-180v360ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Z'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  vertical-align: -0.05em;
 }
