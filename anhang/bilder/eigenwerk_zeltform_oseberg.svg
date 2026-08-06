@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="100" viewBox="0 0 180 100">
+  <rect width="180" height="100" fill="#f4efe3"/>
+  <g fill="none" stroke="#392f25" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- vorderes Giebelpaar: gekreuzte Scherbeine und Querbrett -->
+    <path d="M15 82L55 15M75 82L35 15M15 82H75"/>
+    <!-- hinteres Giebelpaar -->
+    <path d="M105 70L139 24M155 70L122 24M105 70H155"/>
+    <!-- drei Längsstangen: First und beide unteren Seiten -->
+    <path d="M45 32L131 38M15 82L105 70M75 82L155 70"/>
+    <!-- vereinfachte Tierkopfenden oberhalb der Kreuzungen -->
+    <path d="M55 15q7-7 8 1q0 6-7 5M35 15q-7-7-8 1q0 6 7 5M139 24q6-6 7 1q0 5-6 4M122 24q-6-6-7 1q0 5 6 4"/>
+  </g>
+</svg>

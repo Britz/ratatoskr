@@ -23,6 +23,31 @@
               stroke-linejoin: round; opacity: 1; pointer-events: none;
               transition: opacity .15s ease .3s; }
   .mk-sub   { font-weight: 400; font-size: 13px; }
+  .mk-grp.is-active > .mk      { transform: scale(1.2); }
+  .mk-grp.is-active > .mk-disc { transform: scale(2); }
+  .mk-grp.is-active > .mk-disc .mk-disc-fill { fill: var(--md-accent-fg-color, var(--mk-accent)); fill-opacity: .55; }
+  .mk-grp.is-active > .mk-disc .mk-ring  { stroke: var(--md-accent-fg-color, var(--mk-accent)); }
+  .mk-grp.is-active > .mk .mk-core  { fill: var(--md-accent-fg-color, var(--mk-accent)); }
+  .mk-grp.is-active .mk-lbl,
+  .rundgang-karte:has(.mk-grp.is-active) .mk-lbl { opacity: 0; transition: opacity .12s ease 0s; }
+  .mk-halo { fill: transparent; pointer-events: none; }
+  .mk-grp.is-active .mk-halo { pointer-events: all; }
+  g[filter] { will-change: transform; }
+  .mk-star { opacity: 0; visibility: hidden;
+              transition: opacity .1s linear .25s, visibility 0s linear .35s; }
+  .mk-grp.is-active .mk-star { opacity: 1; visibility: visible;
+              transition: opacity .15s ease 0s, visibility 0s 0s; }
+  .mk-spoke { stroke: var(--rt-blue, var(--mk-blue)); stroke-width: 1;
+              stroke-dasharray: 1 4; stroke-linecap: round; }
+  .mk-sat-a { cursor: pointer; }
+  .mk-sat   { transform-box: view-box; transform: scale(0);
+              transition: transform 0s linear .35s; }
+  .mk-grp.is-active .mk-sat { transform: scale(1);
+              transition: transform .32s cubic-bezier(.34,1.56,.64,1) 0s; }
+  .mk-sat-lbl  { font: 700 15px system-ui, sans-serif; fill: var(--md-accent-fg-color, var(--mk-accent));
+              paint-order: stroke; stroke: var(--md-default-bg-color, var(--mk-halo)); stroke-width: 2px;
+              stroke-linejoin: round; }
+  @media (hover: hover) {
   .mk-grp:hover > .mk,      .mk-sat-a:hover .mk      { transform: scale(1.2); }
   .mk-grp:hover > .mk-disc, .mk-sat-a:hover .mk-disc { transform: scale(2); }
   .mk-grp:hover > .mk-disc .mk-disc-fill,
@@ -33,24 +58,13 @@
   .mk-sat-a:hover .mk-core  { fill: var(--md-accent-fg-color, var(--mk-accent)); }
   .mk-grp:hover .mk-lbl,
   .rundgang-karte:has(.mk-grp:hover) .mk-lbl { opacity: 0; transition: opacity .12s ease 0s; }
-  .mk-halo { fill: transparent; pointer-events: none; }
   .mk-grp:hover .mk-halo { pointer-events: all; }
-  g[filter] { will-change: transform; }
-  .mk-star { opacity: 0; visibility: hidden;
-              transition: opacity .1s linear .25s, visibility 0s linear .35s; }
   .mk-grp:hover .mk-star { opacity: 1; visibility: visible;
               transition: opacity .15s ease 0s, visibility 0s 0s; }
-  .mk-spoke { stroke: var(--rt-blue, var(--mk-blue)); stroke-width: 1;
-              stroke-dasharray: 1 4; stroke-linecap: round; }
-  .mk-sat-a { cursor: pointer; }
-  .mk-sat   { transform-box: view-box; transform: scale(0);
-              transition: transform 0s linear .35s; }
-  .mk-grp:hover .mk-sat      { transform: scale(1);
+  .mk-grp:hover .mk-sat { transform: scale(1);
               transition: transform .32s cubic-bezier(.34,1.56,.64,1) 0s; }
-  .mk-sat-lbl  { font: 700 15px system-ui, sans-serif; fill: var(--md-accent-fg-color, var(--mk-accent));
-              paint-order: stroke; stroke: var(--md-default-bg-color, var(--mk-halo)); stroke-width: 2px;
-              stroke-linejoin: round; }
-  .mk-sat-a:hover .mk-sat-lbl { fill: var(--md-accent-fg-color, var(--mk-accent)); }</style>
+  .mk-sat-a:hover .mk-sat-lbl { fill: var(--md-accent-fg-color, var(--mk-accent)); }
+  }</style>
 <defs>
 <filter id="rt-skizze" x="-10%" y="-10%" width="120%" height="120%"
         color-interpolation-filters="sRGB">

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620">
+  <style>
+    .bg{fill:#f4efe3}.line{fill:none;stroke:#392f25;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .dash{fill:none;stroke:#7b6854;stroke-width:3;stroke-dasharray:8 7}
+    .txt{font:600 22px sans-serif;fill:#392f25}.sub{font:16px sans-serif;fill:#645444}
+  </style>
+  <rect class="bg" width="1200" height="620"/>
+  <g transform="translate(30,25)">
+    <g transform="translate(0,0)"><path class="line" d="M15 105L105 25l90 80M15 105h180M105 25v80"/><text class="txt" x="0" y="140">Oseberg</text><text class="sub" x="0" y="162">Dreiecksrahmen</text></g>
+    <g transform="translate(235,0)"><path class="line" d="M15 105L105 25l90 80M35 8l140 114M175 8L35 122"/><text class="txt" x="0" y="140">Gokstad</text><text class="sub" x="0" y="162">gedeutete Giebelbretter</text></g>
+    <g transform="translate(500,0)"><path class="line" d="M10 105L85 40h95l55 65M10 105h225M85 40h95"/><text class="txt" x="0" y="140">Westliches Firstzelt</text><text class="sub" x="0" y="162">Handschriftenbild</text></g>
+    <g transform="translate(810,0)"><path class="line" d="M20 110L110 15l90 95M45 110L110 15l65 95"/><path class="dash" d="M110 15v95"/><text class="txt" x="0" y="140">Lavvu</text><text class="sub" x="0" y="162">konischer Stangenbau</text></g>
+    <g transform="translate(0,200)"><path class="line" d="M10 110Q105 0 200 110M30 110Q105 35 180 110M10 110h190"/><text class="txt" x="0" y="140">Goahti</text><text class="sub" x="0" y="162">gebogene Rahmen</text></g>
+    <g transform="translate(235,200)"><path class="line" d="M10 110Q105 20 200 110M10 110h190"/><path class="dash" d="M30 110L105 35l75 75"/><text class="txt" x="0" y="140">Oğuz-Filzzelt</text><text class="sub" x="0" y="162">Form nicht beschrieben</text></g>
+    <g transform="translate(500,200)"><path class="line" d="M15 110h200M25 110V65h180v45M25 65l90-50 90 50M115 15v95"/><path class="dash" d="M45 110l45-45M90 110L45 65M140 110l45-45M185 110l-45-45"/><text class="txt" x="0" y="140">Khargāh</text><text class="sub" x="0" y="162">Scherengitterzelt</text></g>
+    <g transform="translate(810,200)"><path class="dash" d="M10 110h220M25 110V75h190v35M25 75Q120 0 215 75M70 110V50M170 110V50"/><text class="txt" x="0" y="140">Abbasidische Hofzelte</text><text class="sub" x="0" y="162">Form hier nicht rekonstruiert</text></g>
+    <g transform="translate(0,400)"><path class="dash" d="M10 110Q105 20 200 110M10 110h190"/><text class="txt" x="0" y="140">Wolga/Chasaren</text><text class="sub" x="0" y="162">keine Formquelle ermittelt</text></g>
+    <g transform="translate(285,400)"><path class="dash" d="M10 110h220M25 110V80h190v30M25 80L105 25h45l65 55M105 25h45"/><text class="txt" x="0" y="140">Byzanz</text><text class="sub" x="0" y="162">keine Formquelle ermittelt</text></g>
+    <g transform="translate(600,400)"><path class="dash" d="M10 110h220M25 110V85h190v25M25 85Q120 5 215 85M55 110V60M185 110V60"/><text class="txt" x="0" y="140">Tang/Ostasien</text><text class="sub" x="0" y="162">keine Formquelle ermittelt</text></g>
+  </g>
+</svg>

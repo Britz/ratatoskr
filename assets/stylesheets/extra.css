@@ -1157,6 +1157,39 @@ body {
   .md-typeset .rt-gallery a.glightbox:focus-visible img { transform: none; }
 }
 
+/* ── Lightbox-Viewer (glightbox): lange Bildunterschriften ───────────────────
+ * Im Vollbild-Viewer zentriert glightbox Bild + Caption; ist die Caption lang,
+ * wird Bild+Caption hoeher als der Viewport und der Ueberschuss laeuft oben UND
+ * unten heraus — die Caption-Unterkante wird abgeschnitten. Nur Desktop (>=769px):
+ * dort setzt glightbox den Container auf height:auto und zentriert im .gslider.
+ * Wir geben dem desc-bottom-Container wieder eine definite Hoehe, sodass das
+ * Bild-Item den Restplatz fuellt — erst dadurch greift max-height:100% und das
+ * Bild schrumpft nur so weit, wie die Caption Platz braucht (kurze Captions
+ * lassen das Bild gross). Sehr lange Captions werden auf
+ * --rt-lightbox-caption-max gedeckelt und scrollen. Der eigene Mobile-Viewer von
+ * glightbox (<769px, Caption als Overlay) bleibt unangetastet. */
+@media (min-width: 769px) {
+  :root { --rt-lightbox-caption-max: 40vh; }
+  .glightbox-clean .ginner-container.desc-bottom {
+    height: 100vh;
+    min-height: 0;
+    justify-content: center;
+  }
+  .glightbox-clean .desc-bottom .gslide-media {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  .glightbox-clean .desc-bottom .gslide-image img {
+    max-height: 100%;
+    object-fit: contain;
+  }
+  .glightbox-clean .desc-bottom .gslide-description.description-bottom {
+    flex: 0 0 auto;
+    max-height: var(--rt-lightbox-caption-max);
+    overflow-y: auto;
+  }
+}
+
 .md-typeset hr {
   max-width: 760px;
 }
