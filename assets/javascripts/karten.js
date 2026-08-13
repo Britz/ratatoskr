@@ -1,16 +1,14 @@
 /**
  * Karten-Touch-Steuerung (Zwei-Tap) für die interaktiven Inline-SVG-Karten.
  *
- * Desktop nutzt weiterhin reines CSS-:hover — dieses Skript greift AUSSCHLIESSLICH
- * auf Touch-Geräten (Gate `matchMedia('(hover: none)')`), damit das Hover-Verhalten
- * am Zeiger-Gerät völlig unberührt bleibt.
+ * Desktop nutzt weiterhin CSS-:hover; die Navigation der als Gruppen eingebetteten
+ * SVG-Links übernimmt dieses Skript auf allen Geräten.
  *
  * Modell (Zwei-Tap):
  *  - Erster Tap auf einen Marker enthüllt ihn (Label bzw. Satelliten-Stationen),
  *    OHNE dem Link zu folgen — dazu wird eine `.is-active`-Klasse gesetzt, die im
  *    jeweiligen SVG-Stylesheet dieselbe Aktiv-Deklaration bekommt wie `:hover`.
- *  - Zweiter Tap auf denselben (nun enthüllten) Marker/Link folgt dem Link: liegt
- *    der Klick INNERHALB des bereits aktiven Elements, lässt das Skript ihn durch.
+ *  - Zweiter Tap auf denselben (nun enthüllten) Marker/Link folgt dem Link.
  *  - Tap auf leere Kartenfläche oder außerhalb der Karte schließt (entfernt `.is-active`).
  *
  * Aktiv-Ziel:
@@ -21,9 +19,12 @@
  *    Satelliten klappen per gespiegelter `.is-active`-Regel auf.
  */
 (function () {
-  if (!window.matchMedia || !window.matchMedia("(hover: none)").matches) return;
-
   var SEL = "svg.fundorte-karte, svg.rundgang-karte";
+
+  function navigate(el) {
+    var href = el && el.getAttribute("data-href");
+    if (href) window.location.assign(href);
+  }
 
   function clear(svg) {
     var on = svg.querySelectorAll(".is-active");
@@ -32,11 +33,20 @@
 
   function onCardClick(e) {
     var svg = e.currentTarget;
+    var link = e.target.closest ? e.target.closest("[data-href]") : null;
+
+    if (!window.matchMedia || !window.matchMedia("(hover: none)").matches) {
+      navigate(link);
+      return;
+    }
 
     // Zweiter Tap: liegt der Klick in einem bereits aktiven Element, folgt der Link.
     var active = svg.querySelectorAll(".is-active");
     for (var i = 0; i < active.length; i++) {
-      if (active[i].contains(e.target)) return;
+      if (active[i].contains(e.target)) {
+        navigate(link || active[i]);
+        return;
+      }
     }
 
     var grp = e.target.closest ? e.target.closest(".mk-grp") : null;
@@ -51,10 +61,19 @@
     target.classList.add("is-active");
   }
 
+  function onKeyDown(e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var link = e.target.closest ? e.target.closest("[data-href]") : null;
+    if (!link) return;
+    e.preventDefault();
+    navigate(link);
+  }
+
   function init() {
     var cards = document.querySelectorAll(SEL);
     for (var i = 0; i < cards.length; i++) {
       cards[i].addEventListener("click", onCardClick);
+      cards[i].addEventListener("keydown", onKeyDown);
     }
   }
 

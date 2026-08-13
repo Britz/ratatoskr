@@ -81,9 +81,13 @@
   box-shadow: 0 8px 26px color-mix(in oklab, var(--md-default-fg-color) 26%, transparent);
 }
 
-.md-typeset .shadow,
-.md-typeset .shadow img {
+.md-typeset .shadow {
   filter: drop-shadow(0 10px 26px color-mix(in oklab, var(--md-default-fg-color) 22%, transparent));
+}
+
+.md-typeset .lie-image-area.shadow,
+.md-typeset .lie-image-area.shadow > .lie-frame {
+  overflow: visible;
 }
 
 body[data-md-color-scheme] .md-content__button {
@@ -964,8 +968,8 @@ body {
 /* Titelbild (Frontmatter titelbild:), big-Callout, Parallax-Callout, Teaser —
    seitenunabhaengig, nicht auf .home gescoped. */
 .rt-titelbild {
-  position: absolute; top: 0; left: 0; z-index: -1;
-  width: 100vw; height: clamp(420px, 78vh, 760px);
+  position: absolute; top: 0; left: 0; right: 0; z-index: -1;
+  height: clamp(420px, 78vh, 760px);
   overflow: hidden; pointer-events: none;
 }
 .rt-titelbild img {
@@ -997,7 +1001,7 @@ body {
   text-align: center; gap: 22px;
 }
 
-.md-typeset .admonition.big > * { max-width: 760px; margin: 0; }
+.md-typeset .admonition.big > * { width: auto; max-width: 100%; min-width: 0; margin: 0; }
 .md-typeset .admonition.big > .admonition-title {
   margin: 0; padding: 0; background: none; border: 0; font-weight: 400;
   font-family: var(--rt-display);
